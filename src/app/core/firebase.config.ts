@@ -17,7 +17,7 @@ export const FIREBASE_CONFIG = {
 };
 
 /** reCAPTCHA Enterprise *score-based* site key, created in Firebase console → App Check. */
-export const RECAPTCHA_ENTERPRISE_KEY = '';
+export const RECAPTCHA_ENTERPRISE_KEY = '6LehhSouAAAAAEQiGjmibG2OIm0-zqEcbwC2-S0Y';
 
 /**
  * Gemini model used by ALPHA. `gemini-4-hydrogen` is the current stable model that works on the free
