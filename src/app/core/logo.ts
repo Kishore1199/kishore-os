@@ -18,9 +18,9 @@ let uid = 0;
           <stop offset="1" stop-color="#0b0a16" />
         </linearGradient>
         <linearGradient [attr.id]="id + 'ink'" x1="14" y1="12" x2="50" y2="52" gradientUnits="userSpaceOnUse">
-          <stop offset="0" stop-color="#a78bfa" />
-          <stop offset="0.55" stop-color="#e879f9" />
-          <stop offset="1" stop-color="#fb923c" />
+          <stop offset="0" stop-color="#818cf8" />
+          <stop offset="0.55" stop-color="#6366f1" />
+          <stop offset="1" stop-color="#38bdf8" />
         </linearGradient>
       </defs>
       <!-- tile -->
