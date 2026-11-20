@@ -6,8 +6,8 @@ type Rec = { lang: string; interimResults: boolean; maxAlternatives: number; sta
 
 const PREF_KEY = 'kv-voice';
 const WAKE_KEY = 'kv-wake';
-/** "hey alpha" plus the ways speech engines tend to mishear it */
-const WAKE = /\b(?:hey|hi|hello|ok|okay|a)[\s,]*(?:alpha|alfa|elfa|alpa|alpah|al pha|elpha)\b/i;
+/** "Alpha" (optionally "hey/hi/ok Alpha") at the START of what was said, plus common mishearings */
+const WAKE = /^[\s,.]*(?:(?:hey|hi|hello|ok|okay|a)[\s,]+)?(?:alpha|alfa|elfa|alpa|alpah|elpha)\b/i;
 
 /**
  * ALPHA's voice, built on the Web Speech API (no server, no API key):
@@ -33,7 +33,7 @@ export class VoiceService {
   private target = 0;
   private fallbackT?: ReturnType<typeof setInterval>;
   private rec?: Rec;
-  /** user switched the "Hey Alpha" wake word on */
+  /** user switched the "Alpha" wake word on */
   readonly wakeOn = signal(false);
   /** the background recognizer is running right now (mic is open) */
   readonly wakeLive = signal(false);
@@ -183,14 +183,14 @@ export class VoiceService {
     try { return localStorage.getItem(PREF_KEY) !== '0'; } catch { return true; }
   }
 
-  // ───────── "Hey Alpha" wake word ─────────
+  // ───────── "Alpha" wake word ─────────
 
   /** was the wake word left on last visit? (only auto-starts if mic permission is already granted) */
   wakeSaved() {
     try { return localStorage.getItem(WAKE_KEY) === '1'; } catch { return false; }
   }
 
-  /** Start listening in the background for "hey alpha". `cb` gets whatever was said after it. */
+  /** Start listening in the background for "alpha". `cb` gets whatever was said after it. */
   enableWake(cb: (rest: string) => void) {
     if (!this.canListen) return false;
     this.wakeCb = cb;

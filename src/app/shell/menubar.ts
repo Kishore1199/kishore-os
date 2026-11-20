@@ -32,7 +32,7 @@ import { PROFILE } from '../data/portfolio.data';
         <span class="status mono"><i></i> Open to work</span>
         <button type="button" class="ic" (click)="os.spotlight.set(true)" aria-label="Search (Ctrl K)"><app-icon name="search" [size]="15" /></button>
         @if (kai.voice.canListen) {
-          <button type="button" class="ic" [class.wake]="kai.voice.wakeOn()" (click)="kai.toggleWake()" [attr.aria-pressed]="kai.voice.wakeOn()" [attr.aria-label]="kai.voice.wakeOn() ? 'Turn off Hey Alpha' : 'Turn on Hey Alpha'" [title]="kai.voice.wakeOn() ? 'Listening for “Hey Alpha” — click to turn off' : 'Turn on “Hey Alpha” wake word'"><app-icon name="mic" [size]="15" /></button>
+          <button type="button" class="ic" [class.wake]="kai.voice.wakeOn()" (click)="kai.toggleWake()" [attr.aria-pressed]="kai.voice.wakeOn()" [attr.aria-label]="kai.voice.wakeOn() ? 'Turn off Alpha wake word' : 'Turn on Alpha wake word'" [title]="kai.voice.wakeOn() ? 'Listening for “Alpha” — click to turn off' : 'Turn on “Alpha” wake word'"><app-icon name="mic" [size]="15" /></button>
         }
         <button type="button" class="ic" (click)="kai.voice.toggle()" [attr.aria-label]="kai.voice.enabled() ? 'Mute ALPHA' : 'Unmute ALPHA'" [attr.aria-pressed]="kai.voice.enabled()">
           <app-icon [name]="kai.voice.enabled() ? 'volume' : 'volume-x'" [size]="15" />

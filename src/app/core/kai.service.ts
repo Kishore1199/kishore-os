@@ -28,13 +28,13 @@ export class KaiService {
     }
   }
 
-  /** "Hey Alpha" toggle (button in chat + menu bar, Spotlight action). */
+  /** "Alpha" toggle (button in chat + menu bar, Spotlight action). */
   toggleWake() {
-    if (this.voice.wakeOn()) { this.voice.disableWake(); this.os.notify('"Hey Alpha" is off'); return; }
-    if (!this.voice.canListen) { this.os.notify('"Hey Alpha" needs Chrome, Edge or Safari'); return; }
+    if (this.voice.wakeOn()) { this.voice.disableWake(); this.os.notify('"Alpha" is off'); return; }
+    if (!this.voice.canListen) { this.os.notify('"Alpha" needs Chrome, Edge or Safari'); return; }
     this.voice.wakeBlocked.set(false);
     this.voice.enableWake(rest => this.onWake(rest));
-    this.os.notify('Say "Hey Alpha" any time 👂');
+    this.os.notify('Just say "Alpha" any time 👂');
   }
 
   /** ALPHA heard its name: wake up, then take the question (said in the same breath, or next). */

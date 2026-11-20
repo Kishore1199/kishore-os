@@ -66,7 +66,7 @@ export class Spotlight {
     { kind: 'action', label: 'Start the voice tour', sub: 'ALPHA walks you through everything', icon: 'volume', run: () => this.kai.tour() },
     { kind: 'action', label: 'Toggle light / dark', sub: 'Theme', icon: 'sun', run: () => this.theme.toggle() },
     { kind: 'action', label: 'Copy email address', sub: PROFILE.email, icon: 'copy', run: () => this.os.copy(PROFILE.email, 'Email') },
-    { kind: 'action', label: 'Turn "Hey Alpha" wake word on/off', sub: 'Wake ALPHA with your voice', icon: 'mic', run: () => this.kai.toggleWake() },
+    { kind: 'action', label: 'Turn "Alpha" wake word on/off', sub: 'Wake ALPHA with your voice', icon: 'mic', run: () => this.kai.toggleWake() },
     { kind: 'action', label: 'Ask ALPHA', sub: 'Open the voice assistant', icon: 'mic', run: () => this.kai.chatOpen.set(true) },
     ...PROJECTS.map(p => ({ kind: 'project', label: p.title, sub: `${p.org} · ${p.period}`, icon: 'folder', run: () => this.os.open('projects') })),
     ...SKILL_CATEGORIES.flatMap(c => c.skills.map(s => ({ kind: 'skill', label: s.name, sub: c.name, icon: 'layers', run: () => this.os.open('skills') }))),

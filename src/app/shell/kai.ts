@@ -21,7 +21,7 @@ const SUGGEST = ['Start the tour', 'Who is Kishore?', 'Tell me about the 75Healt
       <section class="panel" role="dialog" aria-label="Chat with ALPHA">
         <header>
           <div><b>ALPHA</b><small class="mono">here to assist you · {{ kai.cloud.enabled ? 'Gemini AI' : 'offline brain' }} · {{ kai.voice.voiceName() || 'voice off' }}</small></div>
-          <button type="button" class="wake" [class.on]="kai.voice.wakeOn()" (click)="kai.toggleWake()" [attr.aria-pressed]="kai.voice.wakeOn()" title="Wake ALPHA by saying &quot;Hey Alpha&quot;"><app-icon name="mic" [size]="12" /> Hey Alpha</button>
+          <button type="button" class="wake" [class.on]="kai.voice.wakeOn()" (click)="kai.toggleWake()" [attr.aria-pressed]="kai.voice.wakeOn()" title="Wake ALPHA by saying &quot;Alpha&quot;"><app-icon name="mic" [size]="12" /> Alpha</button>
           <button type="button" class="tbtn" (click)="kai.tour()"><app-icon name="play" [size]="12" /> Tour</button>
           <button type="button" class="x" (click)="kai.chatOpen.set(false)" aria-label="Close chat"><app-icon name="close" [size]="15" /></button>
         </header>
@@ -57,7 +57,7 @@ const SUGGEST = ['Start the tour', 'Who is Kishore?', 'Tell me about the 75Healt
         }
       }
       <div class="bot" (dblclick)="flash('love', 2000)" (pointerdown)="dragStart($event)" title="Drag me anywhere">
-        @if (kai.voice.wakeLive()) { <span class="ear" [class.heard]="kai.voice.wakeHeard()" title="Listening for &quot;Hey Alpha&quot;">👂</span> }
+        @if (kai.voice.wakeLive()) { <span class="ear" [class.heard]="kai.voice.wakeHeard()" title="Listening for &quot;Alpha&quot;">👂</span> }
         <app-robot [mood]="mood()" (touched)="touch($event)" (pointerenter)="hover.set(true)" (pointerleave)="hover.set(false)" />
         <button type="button" class="name mono" (click)="toggleChat()" aria-label="Talk to ALPHA, your assistant">{{ label() }}</button>
       </div>
