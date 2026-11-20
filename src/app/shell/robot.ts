@@ -60,7 +60,7 @@ export type Zone = 'face' | 'belly' | 'head' | 'hand' | 'ear';
         <path d="M34 92c0-8 6-12 26-12s26 4 26 12v18c0 10-10 18-26 18s-26-8-26-18z" fill="url(#rp-shell)" stroke="#b7bddc" stroke-width="1" />
         <circle cx="60" cy="104" r="11" fill="#11142c" />
         <circle cx="60" cy="104" r="11" fill="none" class="ring" stroke-width="2.2" />
-        <path d="M56 98.5v11M64.5 99l-5 5 5 5" stroke="#fff" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+        <rect x="54.2" y="98" width="2.5" height="12" rx="0.5" fill="#fff" /><path d="M57.7 104 62.7 98h3.1L60.9 104l4.9 6h-3.1z" fill="#fff" />
 
         <!-- neck -->
         <rect x="53" y="74" width="14" height="9" rx="3" fill="#c9cee8" />

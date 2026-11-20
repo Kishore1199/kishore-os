@@ -3,8 +3,9 @@ import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 let uid = 0;
 
 /**
- * Kishore.OS mark: a gradient app tile with a "K" drawn as code — a stem plus a "<" bracket —
- * and a teal status light for ALPHA, the voice guide.
+ * Kishore.OS mark — a geometric "K" monogram on an ink tile.
+ * The K is a stem plus a "<" code chevron (developer + initial), drawn with equal
+ * stroke weights, square cuts and mitred joins so it stays crisp from 16 px up.
  */
 @Component({
   selector: 'app-logo',
@@ -13,30 +14,23 @@ let uid = 0;
   template: `
     <svg [attr.width]="size()" [attr.height]="size()" viewBox="0 0 64 64" fill="none">
       <defs>
-        <linearGradient [attr.id]="id + 'bg'" x1="4" y1="4" x2="60" y2="60" gradientUnits="userSpaceOnUse">
-          <stop offset="0" stop-color="#7c3aed" />
-          <stop offset="0.55" stop-color="#c026d3" />
-          <stop offset="1" stop-color="#ff7a3d" />
+        <linearGradient [attr.id]="id + 'tile'" x1="32" y1="0" x2="32" y2="64" gradientUnits="userSpaceOnUse">
+          <stop offset="0" stop-color="#1c1932" />
+          <stop offset="1" stop-color="#0b0a16" />
         </linearGradient>
-        <linearGradient [attr.id]="id + 'gl'" x1="32" y1="2" x2="32" y2="34" gradientUnits="userSpaceOnUse">
-          <stop offset="0" stop-color="#fff" stop-opacity="0.38" />
-          <stop offset="1" stop-color="#fff" stop-opacity="0" />
+        <linearGradient [attr.id]="id + 'ink'" x1="16" y1="14" x2="48" y2="50" gradientUnits="userSpaceOnUse">
+          <stop offset="0" stop-color="#a78bfa" />
+          <stop offset="0.55" stop-color="#e879f9" />
+          <stop offset="1" stop-color="#fb923c" />
         </linearGradient>
-        <radialGradient [attr.id]="id + 'dot'" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(48 16) scale(9)">
-          <stop offset="0" stop-color="#ccfbf1" />
-          <stop offset="0.45" stop-color="#2dd4bf" />
-          <stop offset="1" stop-color="#2dd4bf" stop-opacity="0" />
-        </radialGradient>
       </defs>
-      <rect x="2" y="2" width="60" height="60" rx="17" [attr.fill]="'url(#' + id + 'bg)'" />
-      <rect x="2" y="2" width="60" height="30" rx="17" [attr.fill]="'url(#' + id + 'gl)'" />
-      <rect x="2.75" y="2.75" width="58.5" height="58.5" rx="16.25" stroke="#fff" stroke-opacity="0.22" stroke-width="1.5" />
-      <!-- K: stem + code bracket -->
-      <path d="M20 17v30" stroke="#fff" stroke-width="6.5" stroke-linecap="round" />
-      <path d="M42 18 28.5 32 42 46" stroke="#fff" stroke-width="6.5" stroke-linecap="round" stroke-linejoin="round" />
-      <!-- ALPHA status light -->
-      <circle cx="48" cy="16" r="9" [attr.fill]="'url(#' + id + 'dot)'" />
-      <circle cx="48" cy="16" r="3.6" fill="#ecfeff" />
+      <!-- tile -->
+      <rect x="1" y="1" width="62" height="62" rx="15" [attr.fill]="'url(#' + id + 'tile)'" />
+      <rect x="1.5" y="1.5" width="61" height="61" rx="14.5" stroke="#ffffff" stroke-opacity="0.12" />
+      <path d="M16 2.5h32c6 0 10.5 3.5 12.5 8" stroke="#ffffff" stroke-opacity="0.18" stroke-linecap="round" />
+      <!-- K monogram: stem + code chevron -->
+      <rect x="17" y="15" width="7" height="34" rx="1.5" [attr.fill]="'url(#' + id + 'ink)'" />
+      <path d="M27 32 41 15h9L36 32l14 17h-9z" [attr.fill]="'url(#' + id + 'ink)'" />
     </svg>
   `,
 })
