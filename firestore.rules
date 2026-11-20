@@ -1,0 +1,23 @@
+rules_version = '2';
+
+// Guestbook: anyone can read notes and add a well-formed one; nobody can edit or delete from the site.
+// (Delete spam yourself in Firebase console → Firestore → guestbook.)
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /guestbook/{noteId} {
+      allow read: if true;
+      allow create: if request.resource.data.keys().hasOnly(['name', 'message', 'color', 'createdAt'])
+        && request.resource.data.name is string
+        && request.resource.data.name.size() >= 2 && request.resource.data.name.size() <= 40
+        && request.resource.data.message is string
+        && request.resource.data.message.size() >= 3 && request.resource.data.message.size() <= 240
+        && request.resource.data.color in ['#fde68a', '#fbcfe8', '#bbf7d0', '#bae6fd', '#ddd6fe']
+        && request.resource.data.createdAt == request.time;
+      allow update, delete: if false;
+    }
+    // everything else is closed
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

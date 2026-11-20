@@ -1,0 +1,25 @@
+# dependencies & build output
+/node_modules
+/dist
+/.angular
+/out-tsc
+
+# Firebase local cache / logs
+/.firebase
+firebase-debug.log*
+firestore-debug.log*
+ui-debug.log*
+
+# never commit service-account keys or env files
+*-service-account*.json
+service-account*.json
+.env
+.env.*
+
+# editors / OS
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+Thumbs.db
+npm-debug.log*
