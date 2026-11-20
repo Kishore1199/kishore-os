@@ -42,7 +42,7 @@ const SUGGEST = ['Start the tour', 'Who is Kishore?', 'Tell me about the 75Healt
     }
 
     <!-- the robot -->
-    <div class="dock-bot" [class.moved]="!!pos()" [class.dragging]="dragging()" [style.left.px]="pos()?.x" [style.top.px]="pos()?.y" [class.live]="live()" [class.talk]="kai.voice.speaking()" [class.listen]="kai.voice.listening()" [class.happy]="mood() === 'happy' || mood() === 'wink' || mood() === 'love'" #bot>
+    <div class="dock-bot" [class.moved]="!!pos()" [class.dragging]="dragging()" [style.left.px]="pos()?.x" [style.top.px]="pos()?.y" [class.live]="live() && !kai.chatOpen()" [class.talk]="kai.voice.speaking()" [class.listen]="kai.voice.listening()" [class.happy]="mood() === 'happy' || mood() === 'wink' || mood() === 'love'" #bot>
       @if (live()) {
         <div class="ctl" role="toolbar" aria-label="ALPHA controls">
           @if (kai.tourStep() >= 0) {
