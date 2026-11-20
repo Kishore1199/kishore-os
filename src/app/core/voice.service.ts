@@ -5,6 +5,9 @@ type Rec = { lang: string; interimResults: boolean; maxAlternatives: number; sta
   onend: (() => void) | null; onerror: ((e: { error: string }) => void) | null; };
 
 const PREF_KEY = 'kv-voice';
+const WAKE_KEY = 'kv-wake';
+/** "hey alpha" plus the ways speech engines tend to mishear it */
+const WAKE = /\b(?:hey|hi|hello|ok|okay|a)[\s,]*(?:alpha|alfa|elfa|alpa|alpah|al pha|elpha)\b/i;
 
 /**
  * ALPHA's voice, built on the Web Speech API (no server, no API key):
@@ -30,9 +33,19 @@ export class VoiceService {
   private target = 0;
   private fallbackT?: ReturnType<typeof setInterval>;
   private rec?: Rec;
+  /** user switched the "Hey Alpha" wake word on */
+  readonly wakeOn = signal(false);
+  /** the background recognizer is running right now (mic is open) */
+  readonly wakeLive = signal(false);
+  /** the wake word was just heard and we're waiting for the sentence to finish */
+  readonly wakeHeard = signal(false);
+  private wakeRec?: Rec & { continuous: boolean };
+  private wakeCb?: (rest: string) => void;
+  private wakeHold = false;
   private token = 0;
 
   constructor() {
+    if (typeof document !== 'undefined') document.addEventListener('visibilitychange', () => (document.hidden ? this.stopWakeRec() : this.startWake()));
     if (!this.canSpeak) return;
     const pick = () => {
       const vs = speechSynthesis.getVoices().filter(v => v.lang.startsWith('en'));
@@ -57,6 +70,7 @@ export class VoiceService {
    */
   say(text: string): Promise<void> {
     this.stop();
+    this.stopWakeRec(); // don't let the mic hear ALPHA say its own name
     const my = ++this.token;
     this.caption.set(text);
     this.charAt.set(0);
@@ -123,6 +137,7 @@ export class VoiceService {
     const R = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
     if (!R) return Promise.resolve('');
     this.stop();
+    this.stopWakeRec(); // only one recognizer can use the mic
     this.rec?.abort();
     const rec: Rec = new R();
     this.rec = rec;
@@ -167,4 +182,80 @@ export class VoiceService {
   private load() {
     try { return localStorage.getItem(PREF_KEY) !== '0'; } catch { return true; }
   }
+
+  // ───────── "Hey Alpha" wake word ─────────
+
+  /** was the wake word left on last visit? (only auto-starts if mic permission is already granted) */
+  wakeSaved() {
+    try { return localStorage.getItem(WAKE_KEY) === '1'; } catch { return false; }
+  }
+
+  /** Start listening in the background for "hey alpha". `cb` gets whatever was said after it. */
+  enableWake(cb: (rest: string) => void) {
+    if (!this.canListen) return false;
+    this.wakeCb = cb;
+    this.wakeOn.set(true);
+    try { localStorage.setItem(WAKE_KEY, '1'); } catch { /* ignore */ }
+    this.startWake();
+    return true;
+  }
+
+  disableWake() {
+    this.wakeOn.set(false);
+    try { localStorage.setItem(WAKE_KEY, '0'); } catch { /* ignore */ }
+    this.stopWakeRec();
+  }
+
+  /** pause the wake word while ALPHA talks or takes a question */
+  holdWake(hold: boolean) {
+    this.wakeHold = hold;
+    if (hold) this.stopWakeRec();
+    else this.startWake();
+  }
+
+  private startWake() {
+    if (!this.wakeOn() || this.wakeHold || this.wakeRec || this.speaking() || this.listening() || document.hidden) return;
+    const R = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+    if (!R) return;
+    const rec = new R() as Rec & { continuous: boolean };
+    rec.continuous = true;
+    rec.interimResults = true;
+    rec.lang = 'en-IN';
+    rec.maxAlternatives = 1;
+    let fired = false;
+    rec.onresult = e => {
+      const last = e.results[e.results.length - 1];
+      const txt = last[0].transcript;
+      const m = txt.match(WAKE);
+      if (!m) return;
+      this.wakeHeard.set(true);
+      if (!last.isFinal || fired) return;
+      fired = true;
+      const rest = txt.slice((m.index ?? 0) + m[0].length).replace(/^[\s,.!?]+/, '').trim();
+      this.wakeHold = true; // the handler releases it when the conversation is over
+      this.stopWakeRec();
+      this.wakeHeard.set(false);
+      this.wakeCb?.(rest);
+    };
+    rec.onerror = ev => {
+      if (ev.error === 'not-allowed' || ev.error === 'service-not-allowed') { this.disableWake(); this.wakeBlocked.set(true); }
+    };
+    rec.onend = () => {
+      if (this.wakeRec === rec) { this.wakeRec = undefined; this.wakeLive.set(false); }
+      this.wakeHeard.set(false);
+      // Chrome ends continuous recognition after silence — quietly start again
+      if (this.wakeOn() && !this.wakeHold) setTimeout(() => this.startWake(), 350);
+    };
+    try { rec.start(); this.wakeRec = rec; this.wakeLive.set(true); } catch { /* already running */ }
+  }
+
+  private stopWakeRec() {
+    const r = this.wakeRec;
+    this.wakeRec = undefined;
+    this.wakeLive.set(false);
+    try { r?.abort(); } catch { /* ignore */ }
+  }
+
+  /** set when the browser refused microphone access */
+  readonly wakeBlocked = signal(false);
 }

@@ -35,6 +35,7 @@ import { EXPERIENCE, PROFILE } from '../data/portfolio.data';
           <li><kbd>Ctrl</kbd> + <kbd>K</kbd> search everything</li>
           <li>Drag windows — and ALPHA 🤖 — anywhere</li>
           <li>🔊 <em>Explain</em> on any window — ALPHA reads it aloud</li>
+          <li>Turn on 🎤 and say <b>“Hey Alpha”</b></li>
           <li>Type <code>alpha</code> in the Terminal</li>
         </ul>
       </div>

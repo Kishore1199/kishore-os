@@ -21,6 +21,7 @@ const SUGGEST = ['Start the tour', 'Who is Kishore?', 'Tell me about the 75Healt
       <section class="panel" role="dialog" aria-label="Chat with ALPHA">
         <header>
           <div><b>ALPHA</b><small class="mono">here to assist you · {{ kai.cloud.enabled ? 'Gemini AI' : 'offline brain' }} · {{ kai.voice.voiceName() || 'voice off' }}</small></div>
+          <button type="button" class="wake" [class.on]="kai.voice.wakeOn()" (click)="kai.toggleWake()" [attr.aria-pressed]="kai.voice.wakeOn()" title="Wake ALPHA by saying &quot;Hey Alpha&quot;"><app-icon name="mic" [size]="12" /> Hey Alpha</button>
           <button type="button" class="tbtn" (click)="kai.tour()"><app-icon name="play" [size]="12" /> Tour</button>
           <button type="button" class="x" (click)="kai.chatOpen.set(false)" aria-label="Close chat"><app-icon name="close" [size]="15" /></button>
         </header>
@@ -56,6 +57,7 @@ const SUGGEST = ['Start the tour', 'Who is Kishore?', 'Tell me about the 75Healt
         }
       }
       <div class="bot" (dblclick)="flash('love', 2000)" (pointerdown)="dragStart($event)" title="Drag me anywhere">
+        @if (kai.voice.wakeLive()) { <span class="ear" [class.heard]="kai.voice.wakeHeard()" title="Listening for &quot;Hey Alpha&quot;">👂</span> }
         <app-robot [mood]="mood()" (touched)="touch($event)" (pointerenter)="hover.set(true)" (pointerleave)="hover.set(false)" />
         <button type="button" class="name mono" (click)="toggleChat()" aria-label="Talk to ALPHA, your assistant">{{ label() }}</button>
       </div>
@@ -90,13 +92,20 @@ const SUGGEST = ['Start the tour', 'Who is Kishore?', 'Tell me about the 75Healt
     .bubble button { display: inline-flex; align-items: center; gap: 4px; padding: 3px 8px; border-radius: 999px; border: 0; background: var(--accent); color: #fff; cursor: pointer; font-size: 0.6rem; }
 
     /* ── chat panel ── */
-    .panel { position: fixed; right: 18px; bottom: 185px; width: min(380px, calc(100vw - 24px)); height: min(540px, calc(100dvh - 200px)); display: flex; flex-direction: column; border-radius: 22px; overflow: hidden;
+    .panel { position: fixed; right: 18px; bottom: 185px; width: min(380px, calc(100vw - 24px)); height: min(540px, calc(100dvh - 245px)); display: flex; flex-direction: column; border-radius: 22px; overflow: hidden;
       background: color-mix(in srgb, var(--solid) 88%, transparent); backdrop-filter: blur(24px); border: 1px solid var(--line-2); box-shadow: var(--shadow); animation: fade-up 0.25s; }
     header { display: flex; align-items: center; gap: 8px; padding: 14px 14px 12px 18px; border-bottom: 1px solid var(--line); }
     header div { flex: 1; display: flex; flex-direction: column; min-width: 0; }
     header b { font-family: var(--display); font-size: 1.1rem; }
     header small { font-size: 0.64rem; color: var(--ink-3); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .tbtn { display: inline-flex; align-items: center; gap: 5px; padding: 6px 11px; border-radius: 999px; border: 0; cursor: pointer; color: #fff; background: linear-gradient(135deg, var(--violet), var(--accent)); font-size: 0.76rem; font-weight: 600; }
+    .wake { display: inline-flex; align-items: center; gap: 4px; padding: 6px 10px; border-radius: 999px; border: 1px solid var(--line-2); background: none; cursor: pointer; font-size: 0.72rem; font-weight: 600; color: var(--ink-2); }
+    .wake.on { color: #fff; border-color: var(--teal); background: var(--teal); box-shadow: 0 0 12px color-mix(in srgb, var(--teal) 60%, transparent); }
+    .ear { position: absolute; top: 4px; left: 6px; z-index: 2; width: 26px; height: 26px; display: grid; place-items: center; border-radius: 50%; font-size: 14px;
+      background: var(--solid); border: 1px solid var(--teal); box-shadow: 0 0 10px color-mix(in srgb, var(--teal) 70%, transparent); animation: earpulse 2s ease-in-out infinite; }
+    .ear.heard { border-color: #fde047; box-shadow: 0 0 16px #fde047; transform: scale(1.2); }
+    @keyframes earpulse { 50% { box-shadow: 0 0 2px color-mix(in srgb, var(--teal) 40%, transparent); } }
+    .bot { position: relative; }
     .x { width: 30px; height: 30px; border-radius: 9px; border: 1px solid var(--line-2); background: none; cursor: pointer; display: grid; place-items: center; }
     .log { flex: 1; overflow-y: auto; padding: 14px; display: flex; flex-direction: column; gap: 8px; }
     .m { max-width: 88%; padding: 9px 13px; border-radius: 16px 16px 16px 5px; background: var(--glass-2); border: 1px solid var(--line); font-size: 0.88rem; }
@@ -154,7 +163,7 @@ export class Kai {
     if (this.kai.voice.speaking()) return 'talk';
     return this.react() ?? (this.hover() ? 'happy' : this.sleeping() ? 'sleep' : 'idle');
   });
-  protected readonly label = computed(() => this.dragging() ? 'wheee!' : this.kai.thinking() ? 'thinking…' : ({ listen: 'listening…', talk: 'speaking', happy: 'hi there!', wink: ':)', love: '♥ aww, thanks!', sleep: 'zzz…', idle: 'ask alpha', blink: 'blink blink!', giggle: 'hehe, that tickles!', dizzy: 'whoa… dizzy', highfive: 'high five! ✋', shy: 'aww, stop…', wow: 'wow! ✨', cool: 'cool 😎', angry: 'hey! stop poking!', sad: 'aww… sorry', party: 'yay! 🎉', yawn: 'yaawn…' })[this.mood()]);
+  protected readonly label = computed(() => this.dragging() ? 'wheee!' : this.kai.voice.wakeHeard() ? 'yes?' : this.kai.thinking() ? 'thinking…' : ({ listen: 'listening…', talk: 'speaking', happy: 'hi there!', wink: ':)', love: '♥ aww, thanks!', sleep: 'zzz…', idle: 'ask alpha', blink: 'blink blink!', giggle: 'hehe, that tickles!', dizzy: 'whoa… dizzy', highfive: 'high five! ✋', shy: 'aww, stop…', wow: 'wow! ✨', cool: 'cool 😎', angry: 'hey! stop poking!', sad: 'aww… sorry', party: 'yay! 🎉', yawn: 'yaawn…' })[this.mood()]);
 
   /** robot is "on stage" while it talks, listens, or a tour is running */
   protected readonly live = computed(() => this.kai.voice.speaking() || this.kai.voice.listening() || (this.kai.tourStep() >= 0 && !this.kai.tourPaused()));

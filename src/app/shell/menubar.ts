@@ -31,6 +31,9 @@ import { PROFILE } from '../data/portfolio.data';
       <div class="right">
         <span class="status mono"><i></i> Open to work</span>
         <button type="button" class="ic" (click)="os.spotlight.set(true)" aria-label="Search (Ctrl K)"><app-icon name="search" [size]="15" /></button>
+        @if (kai.voice.canListen) {
+          <button type="button" class="ic" [class.wake]="kai.voice.wakeOn()" (click)="kai.toggleWake()" [attr.aria-pressed]="kai.voice.wakeOn()" [attr.aria-label]="kai.voice.wakeOn() ? 'Turn off Hey Alpha' : 'Turn on Hey Alpha'" [title]="kai.voice.wakeOn() ? 'Listening for “Hey Alpha” — click to turn off' : 'Turn on “Hey Alpha” wake word'"><app-icon name="mic" [size]="15" /></button>
+        }
         <button type="button" class="ic" (click)="kai.voice.toggle()" [attr.aria-label]="kai.voice.enabled() ? 'Mute ALPHA' : 'Unmute ALPHA'" [attr.aria-pressed]="kai.voice.enabled()">
           <app-icon [name]="kai.voice.enabled() ? 'volume' : 'volume-x'" [size]="15" />
         </button>
@@ -57,6 +60,7 @@ import { PROFILE } from '../data/portfolio.data';
     .status i { width: 7px; height: 7px; border-radius: 50%; background: var(--teal); box-shadow: 0 0 8px var(--teal); }
     .ic { width: 30px; height: 30px; display: grid; place-items: center; border-radius: 8px; border: 0; background: none; cursor: pointer; }
     .ic:hover { background: var(--glass-2); }
+    .ic.wake { color: var(--teal); background: color-mix(in srgb, var(--teal) 16%, transparent); box-shadow: inset 0 0 0 1px var(--teal); }
     .clock { padding: 0 8px; font-size: 0.78rem; white-space: nowrap; }
     @media (max-width: 760px) { .app, .status, .logo b { display: none; } }
   `,

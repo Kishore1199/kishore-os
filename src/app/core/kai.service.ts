@@ -1,4 +1,4 @@
-import { Injectable, inject, signal } from '@angular/core';
+import { Injectable, effect, inject, signal, untracked } from '@angular/core';
 import { AppId, OsService } from './os.service';
 import { VoiceService } from './voice.service';
 import { NARRATION, TOUR, answer } from './kai.brain';
@@ -13,6 +13,44 @@ export class KaiService {
   readonly cloud = inject(CloudService);
   /** waiting for Gemini */
   readonly thinking = signal(false);
+
+  constructor() {
+    // keep the wake word paused while ALPHA speaks or listens for a question
+    effect(() => {
+      const busy = this.voice.speaking() || this.voice.listening() || this.thinking() || (this.tourStep() >= 0 && !this.tourPaused());
+      untracked(() => this.voice.holdWake(busy));
+    });
+    // turn it back on automatically if it was on last time and mic access was already granted
+    if (this.voice.wakeSaved() && this.voice.canListen) {
+      navigator.permissions?.query({ name: 'microphone' as PermissionName })
+        .then(p => { if (p.state === 'granted') this.voice.enableWake(rest => this.onWake(rest)); })
+        .catch(() => { /* permissions API unavailable — wait for the toggle */ });
+    }
+  }
+
+  /** "Hey Alpha" toggle (button in chat + menu bar, Spotlight action). */
+  toggleWake() {
+    if (this.voice.wakeOn()) { this.voice.disableWake(); this.os.notify('"Hey Alpha" is off'); return; }
+    if (!this.voice.canListen) { this.os.notify('"Hey Alpha" needs Chrome, Edge or Safari'); return; }
+    this.voice.wakeBlocked.set(false);
+    this.voice.enableWake(rest => this.onWake(rest));
+    this.os.notify('Say "Hey Alpha" any time 👂');
+  }
+
+  /** ALPHA heard its name: wake up, then take the question (said in the same breath, or next). */
+  private async onWake(rest: string) {
+    this.os.react('wow', 1200);
+    this.chatOpen.set(true);
+    try {
+      if (rest.length > 2) await this.ask(rest);
+      else {
+        await this.say("Yes? I'm listening.");
+        await this.listenAndAsk();
+      }
+    } finally {
+      this.voice.holdWake(false);
+    }
+  }
   readonly chatOpen = signal(false);
   readonly msgs = signal<ChatMsg[]>([{ from: 'kai', text: "Hi, I'm Alpha, I'm here to assist you. Ask me anything about Kishore — type, or tap the mic and ask out loud." }]);
   /** -1 when no tour is running */
