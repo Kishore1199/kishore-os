@@ -32,7 +32,7 @@ npm run deploy     # ng build + firebase deploy (hosting + firestore rules)
 ```
 
 Pushes to `main` also deploy automatically via GitHub Actions (see `.github/workflows`).
-Firebase setup steps: [FIREBASE_SETUP.md](FIREBASE_SETUP.md).
+Firebase setup steps: [FIREBASE_SETUP.md](FIREBASE_SETUP.md) · How everything was built: [RND.md](RND.md).
 
 ## Contact
 
