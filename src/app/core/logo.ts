@@ -3,9 +3,8 @@ import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 let uid = 0;
 
 /**
- * Kishore.OS mark — a geometric "K" monogram on an ink tile.
- * The K is a stem plus a "<" code chevron (developer + initial), drawn with equal
- * stroke weights, square cuts and mitred joins so it stays crisp from 16 px up.
+ * Kishore.OS mark — three stacked isometric layers on an ink tile:
+ * the full stack (frontend · backend · data). Flat shapes only, so it stays crisp from 16 px up.
  */
 @Component({
   selector: 'app-logo',
@@ -18,7 +17,7 @@ let uid = 0;
           <stop offset="0" stop-color="#1c1932" />
           <stop offset="1" stop-color="#0b0a16" />
         </linearGradient>
-        <linearGradient [attr.id]="id + 'ink'" x1="16" y1="14" x2="48" y2="50" gradientUnits="userSpaceOnUse">
+        <linearGradient [attr.id]="id + 'ink'" x1="14" y1="12" x2="50" y2="52" gradientUnits="userSpaceOnUse">
           <stop offset="0" stop-color="#a78bfa" />
           <stop offset="0.55" stop-color="#e879f9" />
           <stop offset="1" stop-color="#fb923c" />
@@ -28,9 +27,10 @@ let uid = 0;
       <rect x="1" y="1" width="62" height="62" rx="15" [attr.fill]="'url(#' + id + 'tile)'" />
       <rect x="1.5" y="1.5" width="61" height="61" rx="14.5" stroke="#ffffff" stroke-opacity="0.12" />
       <path d="M16 2.5h32c6 0 10.5 3.5 12.5 8" stroke="#ffffff" stroke-opacity="0.18" stroke-linecap="round" />
-      <!-- K monogram: stem + code chevron -->
-      <rect x="17" y="15" width="7" height="34" rx="1.5" [attr.fill]="'url(#' + id + 'ink)'" />
-      <path d="M27 32 41 15h9L36 32l14 17h-9z" [attr.fill]="'url(#' + id + 'ink)'" />
+      <!-- stacked layers: data (bottom), backend (middle), frontend (top) -->
+      <path d="M13 39.5 32 49l19-9.5v5L32 54l-19-9.5z" [attr.fill]="'url(#' + id + 'ink)'" opacity="0.55" />
+      <path d="M13 30.5 32 40l19-9.5v5L32 45l-19-9.5z" [attr.fill]="'url(#' + id + 'ink)'" opacity="0.8" />
+      <path d="M32 11.5 51 21 32 30.5 13 21z" [attr.fill]="'url(#' + id + 'ink)'" />
     </svg>
   `,
 })
