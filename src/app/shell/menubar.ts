@@ -21,6 +21,7 @@ import { PROFILE } from '../data/portfolio.data';
           <button type="button" role="menuitem" (click)="os.open('about')"><app-icon name="user" [size]="14" /> About Kishore</button>
           <button type="button" role="menuitem" (click)="kai.tour()"><app-icon name="volume" [size]="14" /> Start voice tour</button>
           <button type="button" role="menuitem" (click)="os.spotlight.set(true)"><app-icon name="search" [size]="14" /> Spotlight search <kbd>Ctrl K</kbd></button>
+          <button type="button" role="menuitem" (click)="os.open('guestbook')"><app-icon name="message" [size]="14" /> Guestbook</button>
           <button type="button" role="menuitem" (click)="os.open('monitor')"><app-icon name="activity" [size]="14" /> System monitor</button>
           <a role="menuitem" [href]="p.resume" download><app-icon name="download" [size]="14" /> Download resume</a>
           <hr />

@@ -16,10 +16,13 @@ import { APPS, OsService } from '../core/os.service';
         </button>
       }
       <span class="sep"></span>
-      <button type="button" class="it extra" [style.--s]="scale(apps.length)" (click)="os.dockClick('games')" aria-label="Arcade" data-tip="Arcade">
+      <button type="button" class="it" [style.--s]="scale(apps.length)" (click)="os.dockClick('guestbook')" aria-label="Guestbook" data-tip="Guestbook">
+        <span class="ic" style="--c:#f59e0b"><app-icon name="message" [size]="22" /></span>@if (os.isOpen('guestbook')) { <i class="run"></i> }
+      </button>
+      <button type="button" class="it extra" [style.--s]="scale(apps.length + 1)" (click)="os.dockClick('games')" aria-label="Arcade" data-tip="Arcade">
         <span class="ic" style="--c:#ef4444"><app-icon name="gamepad" [size]="22" /></span>@if (os.isOpen('games')) { <i class="run"></i> }
       </button>
-      <button type="button" class="it extra" [style.--s]="scale(apps.length + 1)" (click)="os.dockClick('resume')" aria-label="Resume" data-tip="Resume.pdf">
+      <button type="button" class="it extra" [style.--s]="scale(apps.length + 2)" (click)="os.dockClick('resume')" aria-label="Resume" data-tip="Resume.pdf">
         <span class="ic" style="--c:#64748b"><app-icon name="file" [size]="22" /></span>@if (os.isOpen('resume')) { <i class="run"></i> }
       </button>
     </nav>
@@ -39,7 +42,7 @@ import { APPS, OsService } from '../core/os.service';
     @media (max-width: 760px) {
       :host { bottom: max(10px, env(safe-area-inset-bottom)); }
       .it { width: 46px; height: 46px; transform: none; }
-      .extra, .sep { display: none; }
+      .extra { display: none; }
       .it[data-tip]:hover::after { display: none; }
     }
   `,

@@ -64,7 +64,8 @@ export class OsService {
       const W = innerWidth, H = innerHeight;
       const w = Math.min(d.w, W - 40), h = Math.min(d.h, H - TOP - DOCK - 10);
       const n = this.wins().length;
-      const x = Math.max(20, (W - w) / 2 + ((n % 5) - 2) * 28), y = Math.max(TOP + 10, TOP + (H - TOP - DOCK - h) / 2 + ((n % 5) - 2) * 22);
+      const left = W >= 1100 ? Math.min(330, W - w - 20) : 20; // keep the desktop icons visible on wide screens
+      const x = Math.max(left, left + (W - left - w) / 2 + ((n % 5) - 2) * 28), y = Math.max(TOP + 10, TOP + (H - TOP - DOCK - h) / 2 + ((n % 5) - 2) * 22);
       this.wins.update(ws => [...ws, { id, x, y, w, h, z: ++this.zTop, min: false, max: this.mobile }]);
     };
     this.transition(run);
