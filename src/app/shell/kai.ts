@@ -112,7 +112,8 @@ const SUGGEST = ['Start the tour', 'Who is Kishore?', 'Tell me about the 75Healt
     @keyframes earpulse { 50% { box-shadow: 0 0 2px color-mix(in srgb, var(--teal) 40%, transparent); } }
     .bot { position: relative; }
     .x { width: 30px; height: 30px; border-radius: 9px; border: 1px solid var(--line-2); background: none; cursor: pointer; display: grid; place-items: center; }
-    .log { flex: 1; overflow-y: auto; padding: 14px; display: flex; flex-direction: column; gap: 8px; }
+    header, .sugg, form { flex-shrink: 0; }
+    .log { flex: 1; min-height: 0; overflow-y: auto; padding: 14px; display: flex; flex-direction: column; gap: 8px; }
     .m { max-width: 88%; padding: 9px 13px; border-radius: 16px 16px 16px 5px; background: var(--glass-2); border: 1px solid var(--line); font-size: 0.88rem; }
     .m.me { align-self: flex-end; border-radius: 16px 16px 5px 16px; color: #fff; border: 0; background: linear-gradient(135deg, var(--violet), color-mix(in srgb, var(--violet) 60%, var(--accent))); }
     .m.live { opacity: 0.7; font-style: italic; }
@@ -123,7 +124,7 @@ const SUGGEST = ['Start the tour', 'Who is Kishore?', 'Tell me about the 75Healt
     .sugg { display: flex; gap: 6px; overflow-x: auto; padding: 8px 12px; scrollbar-width: none; border-top: 1px solid var(--line); }
     .sugg button { flex-shrink: 0; padding: 5px 11px; border-radius: 999px; border: 1px solid var(--line-2); background: none; cursor: pointer; font-size: 0.74rem; color: var(--ink-2); }
     .sugg button:hover { color: var(--accent); border-color: var(--accent); }
-    form { display: flex; gap: 8px; padding: 10px 12px 12px; }
+    form { display: flex; flex-shrink: 0; gap: 8px; padding: 10px 12px 12px; }
     form .field { padding: 10px 12px; font-size: 0.88rem; }
     .mic, .send { flex-shrink: 0; width: 42px; border-radius: 12px; border: 1px solid var(--line-2); background: var(--glass-2); cursor: pointer; display: grid; place-items: center; }
     .mic.on { color: #fff; background: var(--teal); border-color: var(--teal); animation: pulse 1.2s infinite; }
