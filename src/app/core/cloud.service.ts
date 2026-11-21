@@ -73,7 +73,7 @@ export class CloudService {
       this.model ??= (async () => {
         const { getAI, getGenerativeModel, GoogleAIBackend } = await import('firebase/ai');
         const ai = getAI(await this.getApp(), { backend: new GoogleAIBackend() });
-        return getGenerativeModel(ai, { model: GEMINI_MODEL, systemInstruction: SYSTEM, generationConfig: { maxOutputTokens: 220, temperature: 0.6 } }, { timeout: 20000 }); // don't keep visitors waiting — fall back after 20 s
+        return getGenerativeModel(ai, { model: GEMINI_MODEL, systemInstruction: SYSTEM, generationConfig: { maxOutputTokens: 220, temperature: 0.6 } }, { timeout: 8000 }); // don't keep visitors waiting — fall back to offline answers after 8 s
       })();
       const model = await this.model;
       // keep the last few turns so follow-up questions make sense

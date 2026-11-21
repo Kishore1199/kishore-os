@@ -197,7 +197,7 @@ sequenceDiagram
   K->>K: run action instantly
   K->>C: ask(question)  [thinking…]
   C->>G: generateContent (system prompt + last 6 turns)
-  alt reply within 20 s
+  alt reply within 8 s
     G-->>C: answer
     C-->>K: answer text
   else error / timeout
@@ -208,7 +208,7 @@ sequenceDiagram
 ```
 - **System prompt** = persona ("Alpha, here to assist you") + strict rules (only facts below, 2–4 spoken sentences, no markdown/emoji, steer back off-topic) + a facts block generated from the portfolio data.
 - Keeps the last 6 turns for follow-up questions; strips markdown before speaking.
-- `maxOutputTokens: 220`, `temperature: 0.6`, **request timeout 20 s**.
+- `maxOutputTokens: 220`, `temperature: 0.6`, **request timeout 8 s**.
 
 ### 6.6 Guided tour
 `KaiService.tour()` walks the script: minimises other windows, opens the next app, `await say(text)`, pauses 450 ms. Pause / skip / stop controls float above the robot. A run counter cancels a tour instantly when the visitor stops or skips.
@@ -355,7 +355,7 @@ flowchart LR
 | `type 'Part[]'` TypeScript error | Firebase AI SDK v13 requires `type: 'text'` | Added the discriminator |
 | Gemini 400 "genai config not found" | AI Logic not linked to the Gemini Developer API | Completed AI Logic → Get started in the console |
 | Gemini 401 "App Check token invalid" | Localhost has no reCAPTCHA | Registered an App Check debug token via CLI |
-| Gemini requests hanging | Upstream "high demand" on the free tier | 20 s timeout → offline fallback (never blocks the visitor) |
+| Gemini requests hanging | Upstream "high demand" on the free tier | 8 s timeout → offline fallback (never blocks the visitor) |
 | `git push` 403 | Windows cached the *work* GitHub account | Username-scoped remote `https://Kishore1199@github.com/…` |
 | CI "firebaseServiceAccount not supplied" | Secret missing / wrong section | Added repository secret with the exact name |
 | CI "caller does not have permission" | Service account had no roles | Granted Hosting Admin, Firebase Viewer, Service Usage Consumer, API Keys Viewer |
@@ -381,7 +381,7 @@ Not testable in automation: real microphone input (wake word / voice questions) 
 
 ## 15. Known limitations
 
-- **Gemini availability:** free-tier capacity can be busy; ALPHA falls back to offline answers after 20 s.
+- **Gemini availability:** free-tier capacity can be busy; ALPHA falls back to offline answers after 8 s.
 - **Speech recognition:** Chrome, Edge, Safari only (not Firefox); Chrome/Edge process audio on Google/Microsoft servers.
 - **Voice quality** depends on the voices installed in the visitor's browser/OS.
 - **Guestbook moderation** is manual (console).
