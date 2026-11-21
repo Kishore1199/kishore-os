@@ -70,20 +70,40 @@ export class KaiService {
     this.say(text);
   }
 
+  /** bumps whenever a question is cancelled or replaced, so late answers are ignored */
+  private askRun = 0;
+  private askAbort?: AbortController;
+
+  /** Stop button: cancel the pending Gemini request and/or the current speech. */
+  cancel(silent = false) {
+    if (!this.thinking() && !this.voice.speaking()) return;
+    this.askRun++;
+    this.askAbort?.abort();
+    this.thinking.set(false);
+    this.voice.stop();
+    if (!silent) this.msgs.update(m => [...m, { from: 'kai', text: 'Okay, stopped. Ask me something else.' }]);
+  }
+
   async ask(q: string) {
     const text = q.trim();
-    if (!text || this.thinking()) return;
+    if (!text) return;
+    // a new question while ALPHA is still thinking/talking replaces the old one
+    if (this.thinking() || this.voice.speaking()) this.cancel(true);
+    const run = ++this.askRun;
     this.msgs.update(m => [...m, { from: 'me', text }]);
     const r = answer(text);
     if (r.tour) { this.msgs.update(m => [...m, { from: 'kai', text: r.text }]); this.tour(); return; }
-    // navigation intents (open an app, copy email, open a chapter) still run locally and instantly
+    // navigation intents (open/scroll, copy email, open a chapter) still run locally and instantly
     if (r.copy) this.os.copy(r.copy, 'Email');
     if (r.open) this.os.open(r.open);
     if (r.link) window.open(r.link, '_blank', 'noopener');
     let reply = r.text;
     if (this.cloud.enabled) {
       this.thinking.set(true);
-      const ai = await this.cloud.ask(text);
+      const ctrl = new AbortController();
+      this.askAbort = ctrl;
+      const ai = await this.cloud.ask(text, ctrl.signal);
+      if (run !== this.askRun) return; // stopped or replaced while waiting
       this.thinking.set(false);
       if (ai) reply = ai;
     }

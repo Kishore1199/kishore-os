@@ -67,7 +67,7 @@ export class CloudService {
   }
 
   /** Ask Gemini. Returns null on any failure so callers can fall back to the offline brain. */
-  async ask(question: string): Promise<string | null> {
+  async ask(question: string, signal?: AbortSignal): Promise<string | null> {
     if (!this.enabled) return null;
     try {
       this.model ??= (async () => {
@@ -78,13 +78,16 @@ export class CloudService {
       const model = await this.model;
       // keep the last few turns so follow-up questions make sense
       const turns: Content[] = this.history.slice(-6).map(h => ({ role: h.role, parts: [{ type: 'text' as const, text: h.text }] }));
-      const res = await model.generateContent({ contents: [...turns, { role: 'user', parts: [{ type: 'text' as const, text: question }] }] });
+      if (signal?.aborted) return null;
+      const res = await model.generateContent({ contents: [...turns, { role: 'user', parts: [{ type: 'text' as const, text: question }] }] }, { signal });
+      if (signal?.aborted) return null;
       const text = res.response.text().replace(/[*_#`>]/g, '').trim();
       if (!text) return null;
       this.history.push({ role: 'user', text: question }, { role: 'model', text });
       this.aiOnline.set(true);
       return text;
     } catch (e) {
+      if (signal?.aborted) return null; // stopped by the visitor — not an outage
       console.warn('[ALPHA] Gemini unavailable, using offline answers', e);
       this.aiOnline.set(false);
       return null;
