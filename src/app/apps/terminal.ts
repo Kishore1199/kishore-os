@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, ElementRef, afterNextRender, effect, inject, signal, untracked, viewChild } from '@angular/core';
 import { KaiService } from '../core/kai.service';
 import { AI_FEATURES } from '../data/ai-features.data';
+import { ArcadeState, GAMES, gameId } from '../core/arcade';
 import { AssistantBus } from '../core/assistant.bus';
 import { labId } from '../lab/lab-ids';
 import { TraceStore } from '../core/trace.store';
@@ -43,6 +44,7 @@ export class Terminal {
   private os = inject(OsService);
   private kai = inject(KaiService);
   private theme = inject(ThemeService);
+  private arcade = inject(ArcadeState);
   private bus = inject(AssistantBus);
   private traces = inject(TraceStore);
   /** how many chat messages were there when this terminal asked; -1 when it is not waiting */
@@ -204,9 +206,12 @@ export class Terminal {
       case 'interview': this.bus.openInterview(); return this.out('opening the mock interview…', 'ok');
       case 'files': this.os.open('files'); return this.out('opening Files…', 'ok');
       case 'game': {
-        const g = ({ detective: 'detective', rps: 'rps', race: 'race', studio: 'studio', daily: 'daily' } as Record<string, 'detective' | 'rps' | 'race' | 'studio' | 'daily'>)[arg.toLowerCase()];
-        if (!g) return this.out('usage: game detective | rps | race | studio | daily', 'err');
-        this.bus.openLab(g);
+        const name = arg.toLowerCase();
+        if (name === 'daily') { this.bus.openLab('daily'); return this.out('starting daily…', 'ok'); }
+        const g = gameId(name);
+        if (!g) return this.out('usage: game ' + [...GAMES.map(x => x.id), 'daily'].join(' | '), 'err');
+        this.arcade.game.set(g);
+        this.os.open('games');
         return this.out(`starting ${g}…`, 'ok');
       }
       case 'windows':

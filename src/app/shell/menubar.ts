@@ -4,6 +4,7 @@ import { Logo } from '../core/logo';
 import { KaiService } from '../core/kai.service';
 import { OsService, appDef } from '../core/os.service';
 import { ThemeService } from '../core/theme.service';
+import { IconLayout } from '../core/icon-layout.service';
 import { NotificationService } from '../core/notification.service';
 import { PetService } from '../core/pet.service';
 import { WallpaperMood } from '../core/wallpaper-mood.service';
@@ -33,6 +34,7 @@ import { PROFILE } from '../data/portfolio.data';
           <hr />
           <button type="button" role="menuitem" (click)="os.tile() || os.notify('Open some windows first')"><app-icon name="grid" [size]="14" /> Tile windows</button>
           <button type="button" role="menuitem" (click)="os.cascade() || os.notify('Open some windows first')"><app-icon name="layers" [size]="14" /> Stack windows</button>
+          <button type="button" role="menuitem" (click)="icons.reset(); os.notify('Icons are back in their places')"><app-icon name="refresh" [size]="14" /> Put icons back</button>
           <button type="button" role="menuitemcheckbox" [attr.aria-checked]="pet.on()" (click)="pet.set(!pet.on())"><app-icon name="bot" [size]="14" /> Let ALPHA walk <kbd>{{ pet.on() ? 'on' : 'off' }}</kbd></button>
           <button type="button" role="menuitemcheckbox" [attr.aria-checked]="mood.on()" (click)="mood.toggle()"><app-icon name="sun" [size]="14" /> Wallpaper mood <kbd>{{ mood.on() ? 'on' : 'off' }}</kbd></button>
           <button type="button" role="menuitem" (click)="os.closeAll()"><app-icon name="close" [size]="14" /> Close all windows</button>
@@ -91,6 +93,7 @@ export class Menubar implements OnInit, OnDestroy {
   protected readonly theme = inject(ThemeService);
   protected readonly p = PROFILE;
   protected readonly notes = inject(NotificationService);
+  protected readonly icons = inject(IconLayout);
   protected readonly pet = inject(PetService);
   protected readonly mood = inject(WallpaperMood);
   protected readonly langs = LANGS;

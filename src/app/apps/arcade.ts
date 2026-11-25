@@ -1,6 +1,8 @@
-import { ChangeDetectionStrategy, Component, OnDestroy, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy, computed, effect, inject, signal, untracked } from '@angular/core';
 import { DetectiveView, RaceView, RpsView, StudioView } from '../lab/game-views';
+import { ArcadeState, GAMES, Game, best, save } from '../core/arcade';
 import { Icon } from '../core/icon';
+import { CoffeeCatch, Reaction, TicTacToe } from './arcade-games';
 import { SkillIcon } from '../core/skill-icon';
 
 interface Bug { id: number; x: number; y: number; dead: boolean; }
@@ -10,25 +12,23 @@ const TECH = [
   { name: 'Java', color: '#ED8B00' }, { name: 'Spring Boot', color: '#6DB33F' }, { name: 'Angular', color: '#DD0031' }, { name: 'TypeScript', color: '#3178C6' },
   { name: 'MySQL', color: '#4479A1' }, { name: 'MongoDB', color: '#47A248' }, { name: 'Docker', color: '#2496ED' }, { name: 'Hibernate', color: '#BCAE79' },
 ];
-const best = (k: string) => { try { return Number(localStorage.getItem(k)) || 0; } catch { return 0; } };
-const save = (k: string, v: number) => { try { localStorage.setItem(k, String(v)); } catch { /* ignore */ } };
-
-type Game = 'bugs' | 'match' | 'detective' | 'rps' | 'race' | 'studio';
 
 @Component({
   selector: 'app-arcade',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [Icon, SkillIcon, DetectiveView, RaceView, RpsView, StudioView],
+  imports: [Icon, SkillIcon, DetectiveView, RaceView, RpsView, StudioView, CoffeeCatch, Reaction, TicTacToe],
   template: `
     <div class="inner">
-          <div class="tabs">
-            <button type="button" [class.on]="game() === 'bugs'" (click)="switchTo('bugs')"><app-icon name="bug" [size]="15" /> Bug squash</button>
-            <button type="button" [class.on]="game() === 'match'" (click)="switchTo('match')"><app-icon name="layers" [size]="15" /> Stack match</button>
-            <button type="button" [class.on]="game() === 'detective'" (click)="switchTo('detective')"><app-icon name="search" [size]="15" /> Detective</button>
-            <button type="button" [class.on]="game() === 'rps'" (click)="switchTo('rps')"><app-icon name="zap" [size]="15" /> Rock paper scissors</button>
-            <button type="button" [class.on]="game() === 'race'" (click)="switchTo('race')"><app-icon name="keyboard" [size]="15" /> Typing race</button>
-            <button type="button" [class.on]="game() === 'studio'" (click)="switchTo('studio')"><app-icon name="bot" [size]="15" /> Robot studio</button>
-          </div>
+          @if (now(); as g) {
+            <div class="top"><button type="button" class="btn sm" (click)="state.game.set(null)"><app-icon name="grid" [size]="14" /> All games</button><h2>{{ g.title }}</h2></div>
+          } @else {
+            <p class="lead">Nine quick games. Best scores stay in this browser.</p>
+            <ul class="menu">
+              @for (g of games; track g.id) {
+                <li><button type="button" [style.--c]="g.color" (click)="state.game.set(g.id)"><span class="gi"><app-icon [name]="g.icon" [size]="24" /></span><b>{{ g.title }}</b><small>{{ g.text }}</small></button></li>
+              }
+            </ul>
+          }
 
           @if (game() === 'bugs') {
             <div class="hud mono">
@@ -46,11 +46,14 @@ type Game = 'bugs' | 'match' | 'detective' | 'rps' | 'race' | 'studio';
                 </div>
               }
             </div>
-          } @else if (game() === 'detective') { @defer (on immediate) { <div class="new"><app-detective /></div> } }
+          } @else if (game() === 'catch') { @defer (on immediate) { <app-catch /> } }
+          @else if (game() === 'tictactoe') { @defer (on immediate) { <app-tictactoe /> } }
+          @else if (game() === 'reaction') { @defer (on immediate) { <app-reaction /> } }
+          @else if (game() === 'detective') { @defer (on immediate) { <div class="new"><app-detective /></div> } }
           @else if (game() === 'rps') { @defer (on immediate) { <div class="new"><app-rps /></div> } }
           @else if (game() === 'race') { @defer (on immediate) { <div class="new"><app-race /></div> } }
           @else if (game() === 'studio') { @defer (on immediate) { <div class="new"><app-studio /></div> } }
-          @else {
+          @else if (game() === 'match') {
             <div class="hud mono">
               <span>moves <b>{{ moves() }}</b></span><span>pairs <b>{{ pairs() }}/8</b></span><span><app-icon name="trophy" [size]="13" /> best <b>{{ matchBest() || '—' }}</b></span>
               <button type="button" class="reset" (click)="newMatch()"><app-icon name="refresh" [size]="13" /> shuffle</button>
@@ -70,9 +73,12 @@ type Game = 'bugs' | 'match' | 'detective' | 'rps' | 'race' | 'studio';
   styles: `
     .inner { padding: 20px 24px 28px; }
     .new { display: grid; gap: 14px; }
-    .tabs { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; }
-    .tabs button { display: inline-flex; align-items: center; gap: 7px; padding: 9px 16px; border-radius: 999px; border: 1px solid var(--line-2); background: none; cursor: pointer; font-weight: 600; font-size: 0.86rem; }
-    .tabs button.on { background: var(--accent); border-color: var(--accent); color: #fff; }
+    .lead { color: var(--ink-2); margin-bottom: 14px; }
+    .top { display: flex; align-items: center; gap: 14px; margin-bottom: 14px; } .top h2 { font-size: 1.25rem; } .sm { padding: 7px 13px; font-size: 0.82rem; }
+    .menu { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; } .menu li { display: grid; }
+    .menu button { display: grid; justify-items: center; align-content: start; gap: 6px; padding: 16px 10px; border-radius: 18px; border: 1px solid var(--line-2); background: linear-gradient(160deg, color-mix(in srgb, var(--c) 22%, transparent), transparent 70%), var(--glass-2); color: var(--ink); cursor: pointer; text-align: center; transition: transform 0.2s, border-color 0.2s; } .menu button:hover { transform: translateY(-3px); border-color: var(--c); }
+    .gi { width: 50px; height: 50px; display: grid; place-items: center; border-radius: 15px; color: #fff; background: var(--c); } .menu b { font-size: 0.94rem; } .menu small { color: var(--ink-2); font-size: 0.78rem; line-height: 1.35; }
+    @media (max-width: 760px) { .inner { padding: 16px 14px 190px; } } @media (max-width: 430px) { .menu { gap: 8px; } .menu button { padding: 12px 6px; } .menu small { display: none; } }
     .hud { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; margin-bottom: 12px; font-size: 0.82rem; color: var(--ink-2); }
     .hud b { color: var(--ink); font-size: 1rem; }
     .hud span { display: inline-flex; align-items: center; gap: 6px; }
@@ -85,7 +91,7 @@ type Game = 'bugs' | 'match' | 'detective' | 'rps' | 'race' | 'studio';
     @keyframes pop { from { transform: scale(0); } }
     @keyframes squash { to { transform: scale(1.6); opacity: 0; } }
     .start { position: absolute; inset: 0; display: grid; place-items: center; align-content: center; gap: 14px; text-align: center; padding: 20px; color: var(--ink-2); }
-    .big { font: 800 1.8rem 'Bricolage Grotesque', sans-serif; color: var(--ink); }
+    .big { font: 800 1.8rem var(--display); color: var(--ink); }
     .board { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; max-width: 520px; margin: 0 auto; }
     .tile { position: relative; aspect-ratio: 1; padding: 0; border: 0; background: none; cursor: pointer; perspective: 600px; }
     .tile span { position: absolute; inset: 0; display: grid; place-items: center; align-content: center; gap: 6px; border-radius: 16px; backface-visibility: hidden; transition: transform 0.45s ease; }
@@ -100,7 +106,14 @@ type Game = 'bugs' | 'match' | 'detective' | 'rps' | 'race' | 'studio';
   `,
 })
 export class Arcade implements OnDestroy {
-  protected readonly game = signal<Game>('bugs');
+  protected readonly state = inject(ArcadeState);
+  protected readonly games = GAMES;
+  protected readonly game = this.state.game;
+  protected readonly now = computed(() => GAMES.find(g => g.id === this.game()) ?? null);
+
+  constructor() {
+    effect(() => { const g = this.game(); untracked(() => this.enter(g)); });
+  }
 
   // ── bug squash ──
   protected readonly bugs = signal<Bug[]>([]);
@@ -151,7 +164,10 @@ export class Arcade implements OnDestroy {
   protected readonly matchBest = signal(best('kv-match'));
   private busy = false;
 
+  private backT?: ReturnType<typeof setTimeout>;
+
   protected newMatch() {
+    clearTimeout(this.backT);
     const deck = [...TECH, ...TECH].map((t, i) => ({ id: i, name: t.name, color: t.color, open: false, done: false }));
     for (let i = deck.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [deck[i], deck[j]] = [deck[j], deck[i]]; }
     this.tiles.set(deck); this.moves.set(0); this.pairs.set(0); this.busy = false;
@@ -169,18 +185,19 @@ export class Arcade implements OnDestroy {
       if (this.pairs() === 8 && (!this.matchBest() || this.moves() < this.matchBest())) { this.matchBest.set(this.moves()); save('kv-match', this.moves()); }
     } else {
       this.busy = true;
-      setTimeout(() => { this.tiles.update(list => list.map(x => (x.done ? x : { ...x, open: false }))); this.busy = false; }, 750);
+      this.backT = setTimeout(() => { this.tiles.update(list => list.map(x => (x.done ? x : { ...x, open: false }))); this.busy = false; }, 750);
     }
   }
 
-  protected switchTo(g: Game) {
-    this.endBugs();
+  /** leaving a game stops it */
+  private enter(g: Game | null) {
+    if (this.running()) this.endBugs();
     this.played.set(false);
-    this.game.set(g);
     if (g === 'match' && !this.tiles().length) this.newMatch();
   }
 
   ngOnDestroy() {
     this.stopBugs();
+    clearTimeout(this.backT);
   }
 }

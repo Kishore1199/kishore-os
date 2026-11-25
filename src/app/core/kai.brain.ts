@@ -20,7 +20,7 @@ export const NARRATION: Record<AppId, string> = {
   notes: `These are the notes Kishore revises before interviews: ${TOPICS.length} chapters and over ${QUESTIONS.toLocaleString()} questions, split into a Java full stack guide and a DSA and coding guide. Search for any topic, like JWT or Kafka, and each chapter opens straight to its page.`,
   terminal: `This is a working terminal. Type help to see the commands. You can list projects, open any app, switch the theme, or even type say, followed by some text, and I will read it out loud.`,
   contact: `Want to work with Kishore? Email him at ${PROFILE.email.replace('@', ' at ')}, or use the form on the right and the message lands straight in his inbox. He is open to Java full stack roles and freelance projects.`,
-  games: `The arcade has six quick games: Bug Squash, Stack Match, Skill Detective, Rock Paper Scissors, a code typing race, and a studio where you direct me.`,
+  games: `The arcade has nine quick games: Bug Squash, Stack Match, Coffee Catch, Three in a Row, Quick Tap, Rock Paper Scissors, Skill Detective, a code typing race, and a studio where you direct me.`,
   monitor: `The system monitor shows how this site itself is built, with live frame rate and load time, what my agent is doing, and a simplified map of the 75Health EHR architecture. Click any block to learn what it does.`,
   ailab: `This is the AI Lab. It holds every AI option on Kishore O S: the job matcher, coding and diagram tools, games, and more. Each tool opens in its own window.`,
   files: `These are your files. Results you save from the AI Lab appear here, next to Kishore's resume and study guides. They stay in this browser.`,

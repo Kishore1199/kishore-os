@@ -1,22 +1,17 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, effect, inject, signal, untracked } from '@angular/core';
+import { DesktopIcons } from './desktop-icons';
 import { Icon } from '../core/icon';
 import { KaiService } from '../core/kai.service';
-import { APPS, OsService } from '../core/os.service';
+import { OsService } from '../core/os.service';
+import { prefersReducedMotion } from '../core/theme.service';
 import { EXPERIENCE, PROFILE } from '../data/portfolio.data';
 
 @Component({
   selector: 'app-desktop',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [Icon],
+  imports: [DesktopIcons, Icon],
   template: `
-    <nav class="icons" aria-label="Desktop apps">
-      @for (a of apps; track a.id) {
-        <button type="button" class="di" (click)="os.open(a.id)" [attr.aria-label]="'Open ' + a.title">
-          <span class="ic" [style.--c]="a.color"><app-icon [name]="a.icon" [size]="24" /></span>
-          <span class="lb">{{ a.title }}</span>
-        </button>
-      }
-    </nav>
+    <app-desktop-icons />
 
     <aside class="widgets">
       <div class="w hello">
@@ -24,17 +19,25 @@ import { EXPERIENCE, PROFILE } from '../data/portfolio.data';
         <h1>Kishore V<span>.</span></h1>
         <p class="role">{{ p.role }}</p>
         <p class="live mono"><i></i> {{ now.role }} @ {{ now.company }}</p>
-        <div class="row">
-          <button type="button" class="btn hot" (click)="kai.tour()"><app-icon name="volume" [size]="15" /> Hear the tour</button>
-          <button type="button" class="btn" (click)="kai.chatOpen.set(true)"><app-icon name="mic" [size]="15" /> Ask ALPHA</button>
-          <button type="button" class="btn" (click)="os.open('ailab')"><app-icon name="spark" [size]="15" /> AI Lab</button>
+        <div class="slider" role="group" aria-roledescription="carousel" aria-label="What to do first" (pointerenter)="hover.set($event.pointerType === 'mouse')" (pointerleave)="hover.set(false)" (focusin)="focus($event)" (focusout)="focused.set(false)">
+          <div class="slides">
+            @for (c of cards; track c.label; let i = $index) {
+              <button type="button" class="btn" [class.hot]="!i" [class.now]="slide() === i" [class.was]="was() === i" [inert]="slide() !== i" (click)="c.run()"><app-icon [name]="c.icon" [size]="16" /> {{ c.label }}</button>
+            }
+          </div>
+          <div class="nav">
+            @for (c of cards; track c.label; let i = $index) {
+              <button type="button" class="dot" [attr.aria-current]="slide() === i" [attr.aria-label]="'Show ' + c.label" (click)="go(i)"><i></i></button>
+            }
+            <button type="button" class="pp" (click)="paused.set(!paused())" [attr.aria-label]="paused() ? 'Play the slider' : 'Pause the slider'"><app-icon [name]="paused() ? 'play' : 'pause'" [size]="11" /></button>
+          </div>
         </div>
       </div>
       <div class="w note">
         <b>Tips</b>
         <ul>
           <li><kbd>Ctrl</kbd> + <kbd>K</kbd> search everything</li>
-          <li>Drag windows — and ALPHA 🤖 — anywhere</li>
+          <li>Drag windows, <b>icons</b> and ALPHA 🤖 anywhere</li>
           <li>🔊 <em>Explain</em> on any window — ALPHA reads it aloud</li>
           <li>Turn on 🎤 and say <b>“Alpha”</b></li>
           <li>Say <b>“put projects next to skills”</b></li>
@@ -45,14 +48,6 @@ import { EXPERIENCE, PROFILE } from '../data/portfolio.data';
   `,
   styles: `
     :host { position: fixed; inset: 40px 0 0; z-index: 1; }
-    .icons { position: absolute; left: 18px; top: 18px; bottom: 100px; display: grid; grid-auto-flow: column; grid-template-rows: repeat(auto-fill, 96px); grid-auto-columns: 92px; gap: 4px; }
-    .di { display: grid; justify-items: center; align-content: start; gap: 6px; padding: 8px 4px; border: 0; border-radius: 14px; background: none; cursor: pointer; }
-    .di:hover, .di:focus-visible { background: color-mix(in srgb, var(--solid) 40%, transparent); }
-    .ic { width: 52px; height: 52px; border-radius: 15px; display: grid; place-items: center; color: #fff;
-      background: linear-gradient(145deg, color-mix(in srgb, var(--c) 85%, #fff), color-mix(in srgb, var(--c) 70%, #000)); box-shadow: inset 0 1px 0 rgba(255,255,255,0.35), 0 10px 22px -10px var(--c); transition: transform 0.2s; }
-    .di:hover .ic { transform: translateY(-3px) scale(1.05); }
-    .lb { font-size: 0.74rem; font-weight: 600; text-align: center; line-height: 1.2; text-shadow: 0 1px 6px rgba(0,0,0,0.45); color: #fff; }
-    :host-context([data-theme='light']) .lb { color: var(--ink); text-shadow: none; }
     .widgets { position: absolute; right: 24px; top: 22px; width: 330px; display: grid; gap: 14px; }
     .w { padding: 20px; border-radius: 22px; background: var(--glass); backdrop-filter: blur(24px) saturate(1.4); border: 1px solid var(--line-2); box-shadow: var(--shadow); animation: fade-up 0.5s both; }
     .hello h1 { font-size: 2.3rem; margin: 6px 0 2px; }
@@ -60,8 +55,15 @@ import { EXPERIENCE, PROFILE } from '../data/portfolio.data';
     .role { font-weight: 600; color: var(--ink-2); }
     .live { display: flex; align-items: center; gap: 8px; margin: 12px 0 16px; font-size: 0.72rem; color: var(--teal); }
     .live i { width: 8px; height: 8px; border-radius: 50%; background: var(--teal); box-shadow: 0 0 10px var(--teal); flex-shrink: 0; }
-    .row { display: flex; flex-wrap: wrap; gap: 8px; }
-    .row .btn { flex: 1; padding: 10px 12px; }
+    .slides { position: relative; height: 48px; overflow: hidden; border-radius: 12px; }
+    .slides .btn { position: absolute; inset: 0; transform: translateX(105%); visibility: hidden; }
+    .slides .now, .slides .was { visibility: visible; transition: transform 0.45s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.2s; }
+    .slides .now { transform: none; } .slides .was { transform: translateX(-105%); }
+    .nav { display: flex; align-items: center; justify-content: center; margin: 4px 0 -10px; }
+    .dot, .pp { display: grid; place-items: center; width: 24px; height: 24px; padding: 0; border: 0; border-radius: 8px; background: none; color: var(--ink-2); cursor: pointer; }
+    .dot i { width: 7px; height: 7px; border-radius: 4px; background: var(--ink-3); transition: width 0.3s, background 0.3s; } .dot[aria-current='true'] i { width: 18px; background: var(--accent); }
+    .pp:hover { color: var(--accent); }
+    @media (prefers-reduced-motion: reduce) { .slides .now, .slides .was { transition: none; } .slides .was { visibility: hidden; } }
     .note { animation-delay: 0.1s; background: color-mix(in srgb, #fde68a 18%, var(--glass)); }
     .note ul { margin: 8px 0 0; padding-left: 18px; display: grid; gap: 4px; font-size: 0.84rem; color: var(--ink-2); }
     kbd, code { padding: 1px 6px; border-radius: 5px; border: 1px solid var(--line-2); font: 500 0.72rem var(--mono); }
@@ -71,7 +73,6 @@ import { EXPERIENCE, PROFILE } from '../data/portfolio.data';
     @media (max-width: 760px) {
       :host { overflow-y: auto; padding: 14px 14px 170px; }
       .widgets { position: static; width: auto; margin-bottom: 18px; }
-      .icons { position: static; display: grid; grid-auto-flow: row; grid-template-rows: none; grid-template-columns: repeat(4, 1fr); grid-auto-columns: auto; gap: 10px 4px; }
       .hello h1 { font-size: 2.1rem; }
     }
   `,
@@ -79,7 +80,36 @@ import { EXPERIENCE, PROFILE } from '../data/portfolio.data';
 export class Desktop {
   protected readonly os = inject(OsService);
   protected readonly kai = inject(KaiService);
-  protected readonly apps = APPS;
   protected readonly p = PROFILE;
   protected readonly now = EXPERIENCE[0];
+
+  // ── the buttons on the card, one at a time ──
+  protected readonly cards = [
+    { label: 'Hear the tour', icon: 'volume', run: () => void this.kai.tour() },
+    { label: 'Ask ALPHA', icon: 'mic', run: () => this.kai.chatOpen.set(true) },
+    { label: 'AI Lab', icon: 'spark', run: () => this.os.open('ailab') },
+  ];
+  protected readonly slide = signal(0);
+  /** the one sliding out */
+  protected readonly was = signal(-1);
+  protected readonly paused = signal(prefersReducedMotion());
+  protected readonly hover = signal(false);
+  protected readonly focused = signal(false);
+
+  constructor() {
+    // every three seconds, but never while somebody is about to press a button
+    effect(clean => {
+      this.slide(); // a manual change starts the three seconds again
+      if (this.paused() || this.hover() || this.focused()) return;
+      const t = setInterval(() => { if (!document.hidden) this.go((this.slide() + 1) % this.cards.length); }, 3000);
+      clean(() => clearInterval(t));
+    });
+  }
+  protected go(i: number) {
+    untracked(() => { if (i !== this.slide()) { this.was.set(this.slide()); this.slide.set(i); } });
+  }
+  /** keyboard focus holds the slider still; a mouse click should not */
+  protected focus(e: FocusEvent) {
+    this.focused.set((e.target as HTMLElement).matches(':focus-visible'));
+  }
 }
