@@ -1,0 +1,3 @@
+model.bin and vocab.txt are derived from minishlab/potion-base-2M (Model2Vec), MIT License.
+https://huggingface.co/minishlab/potion-base-2M
+The weights were rounded to 8 bits.

@@ -1,6 +1,11 @@
-import { ChangeDetectionStrategy, Component, ElementRef, afterNextRender, effect, inject, signal, viewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ElementRef, afterNextRender, effect, inject, signal, untracked, viewChild } from '@angular/core';
 import { KaiService } from '../core/kai.service';
-import { answer } from '../core/kai.brain';
+import { AI_FEATURES } from '../data/ai-features.data';
+import { AssistantBus } from '../core/assistant.bus';
+import { labId } from '../lab/lab-ids';
+import { TraceStore } from '../core/trace.store';
+import { pageCommand } from '../core/page-commands';
+import { windowCommand } from '../core/window-commands';
 import { APPS, AppId, OsService } from '../core/os.service';
 import { ThemeService } from '../core/theme.service';
 import { EDUCATION, EXPERIENCE, PROFILE, PROJECTS, SKILL_CATEGORIES } from '../data/portfolio.data';
@@ -8,7 +13,7 @@ import { STUDY_GUIDES } from '../data/study.data';
 
 interface Line { k: 'in' | 'out' | 'err' | 'ok' | 'art'; t: string; }
 
-const COMMANDS = ['help', 'whoami', 'about', 'ls', 'open', 'projects', 'skills', 'experience', 'education', 'contact', 'email', 'resume', 'notes', 'theme', 'tour', 'say', 'alpha', 'date', 'echo', 'history', 'clear', 'exit', 'sudo'];
+const COMMANDS = ['help', 'whoami', 'about', 'ls', 'open', 'projects', 'skills', 'experience', 'education', 'contact', 'email', 'resume', 'notes', 'theme', 'tour', 'say', 'alpha', 'ask', 'lab', 'match', 'interview', 'trace', 'game', 'tile', 'windows', 'files', 'date', 'echo', 'history', 'clear', 'exit', 'sudo'];
 
 @Component({
   selector: 'app-terminal',
@@ -16,6 +21,7 @@ const COMMANDS = ['help', 'whoami', 'about', 'ls', 'open', 'projects', 'skills',
   template: `
     <div class="term mono" (click)="focus()" #scroll>
       @for (l of lines(); track $index) { <pre [class]="l.k">{{ l.t }}</pre> }
+      @if (waiting()) { <pre class="out" role="status">alpha is thinking…</pre> }
       <label class="prompt">
         <span class="ps"><b>kishore</b>@<i>os</i>:~$</span>
         <input #inp [value]="cur()" (input)="cur.set($any($event.target).value)" (keydown)="key($event)" spellcheck="false" autocomplete="off" aria-label="Terminal input" />
@@ -37,6 +43,10 @@ export class Terminal {
   private os = inject(OsService);
   private kai = inject(KaiService);
   private theme = inject(ThemeService);
+  private bus = inject(AssistantBus);
+  private traces = inject(TraceStore);
+  /** how many chat messages were there when this terminal asked; -1 when it is not waiting */
+  private from = -1;
   private inp = viewChild.required<ElementRef<HTMLInputElement>>('inp');
   private scroll = viewChild.required<ElementRef<HTMLElement>>('scroll');
   protected readonly cur = signal('');
@@ -44,11 +54,26 @@ export class Terminal {
     { k: 'ok', t: 'Kishore.OS terminal · kv-sh 3.0 · ALPHA on board' },
     { k: 'out', t: 'Type "alpha" for the system card or "help" for every command. Tab completes, ↑/↓ walks history.' },
   ]);
+  protected readonly waiting = signal(false);
   private hist: string[] = [];
   private hi = -1;
 
   constructor() {
-    afterNextRender(() => this.focus());
+    // an answer to a question asked here
+    effect(() => {
+      const msgs = this.kai.msgs(), busy = this.kai.thinking();
+      untracked(() => {
+        if (this.from < 0) return;
+        for (const m of msgs.slice(this.from).filter(x => x.from === 'kai')) {
+          for (const s of m.steps ?? []) this.out(`  ${s.state === 'ok' ? '✓' : '✗'} ${s.label}`, s.state === 'ok' ? 'ok' : 'err');
+          this.out('alpha › ' + m.text, 'ok');
+          for (const l of m.links ?? []) this.out(`  ↗ ${l.label}  ${l.url}`);
+          this.from = -1;
+        }
+        this.waiting.set(this.from >= 0 && busy);
+      });
+    });
+    afterNextRender(() => { if (this.os.focused() === 'terminal') this.focus(); });
     effect(() => { this.lines(); const el = this.scroll()?.nativeElement; if (el) queueMicrotask(() => (el.scrollTop = el.scrollHeight)); });
   }
 
@@ -66,6 +91,11 @@ export class Terminal {
       if (!rest.length) { const m = COMMANDS.filter(c => c.startsWith(cmd)); if (m.length === 1) this.cur.set(m[0] + ' '); else if (m.length) this.out(m.join('  ')); }
       else if (cmd === 'open') { const m = APPS.map(a => a.id).filter(a => a.startsWith(rest.join(' '))); if (m.length === 1) this.cur.set('open ' + m[0]); else if (m.length) this.out(m.join('  ')); }
     } else if (e.key === 'l' && e.ctrlKey) { e.preventDefault(); this.lines.set([]); }
+  }
+
+  private ask(q: string) {
+    const at = this.from = this.kai.msgs().length;
+    void this.kai.ask(q).finally(() => { if (this.from === at) { this.from = -1; this.waiting.set(false); } });
   }
 
   private out(t: string, k: Line['k'] = 'out') { this.lines.update(l => [...l, { k, t }]); }
@@ -96,7 +126,11 @@ export class Terminal {
           'tour              start ALPHA\'s voice tour',
           'say <text>        ALPHA reads it out loud',
           'alpha             system card (logo + specs)',
-          'alpha <question>  ask ALPHA anything',
+          'ask <question>    ask ALPHA anything, or just type the question',
+          'lab [tool]        list the AI tools, or open one',
+          'match · interview · game <name> · files',
+          'windows | tile    list or tile the open windows',
+          'trace             what the AI did last',
           'date · echo · history · clear · exit',
         ].join('\n'));
       case 'whoami': case 'about':
@@ -154,10 +188,34 @@ export class Terminal {
       case 'alpha': case 'kai': {
         if (!arg) return this.out(
           `   ██╗      ██╗        kishore@os\n   ██║    ██╔╝ ●      ──────────\n   ██║  ██╔╝          OS        Kishore.OS 3.0 (Angular 22, zoneless)\n   ██║██╔╝            Guide     ALPHA voice assistant\n   ████╔╝             Role      ${PROFILE.role}\n   ██║██╗             Uptime    3+ years\n   ██║  ██╗           Backend   Java 21 · Spring Boot · Hibernate\n   ██║    ██╗         Frontend  Angular · TypeScript\n   ██║      ██╗       Data      MySQL · MongoDB\n   ╚═╝      ╚═╝       Packages  ${SKILL_CATEGORIES.reduce((n, c) => n + c.skills.length, 0)} skills\n                      Location  ${PROFILE.location}\n                      Status    open to work ●`, 'art');
-        const r = answer(arg);
-        this.kai.say(r.text);
-        if (r.open) this.os.open(r.open);
-        return this.out('alpha › ' + r.text, 'ok');
+        return this.ask(arg);
+      }
+      case 'ask':
+        if (!arg) return this.out('usage: ask <question>   e.g. ask where did he use docker', 'err');
+        return this.ask(arg);
+      case 'lab': {
+        if (!arg) return this.out(AI_FEATURES.flatMap(f => (f.action && 'lab' in f.action ? [`${pad(f.action.lab, 16)} ${f.title}`] : [])).join('\n') + '\n\nusage: lab <tool>   e.g. lab compare');
+        const t = labId(arg.toLowerCase());
+        if (!t) return this.out(`lab: no such tool "${arg}". Type "lab" for the list.`, 'err');
+        this.bus.openLab(t);
+        return this.out(`opening ${t}…`, 'ok');
+      }
+      case 'match': this.bus.openMatcher(arg); return this.out('opening the job matcher…', 'ok');
+      case 'interview': this.bus.openInterview(); return this.out('opening the mock interview…', 'ok');
+      case 'files': this.os.open('files'); return this.out('opening Files…', 'ok');
+      case 'game': {
+        const g = ({ detective: 'detective', rps: 'rps', race: 'race', studio: 'studio', daily: 'daily' } as Record<string, 'detective' | 'rps' | 'race' | 'studio' | 'daily'>)[arg.toLowerCase()];
+        if (!g) return this.out('usage: game detective | rps | race | studio | daily', 'err');
+        this.bus.openLab(g);
+        return this.out(`starting ${g}…`, 'ok');
+      }
+      case 'windows':
+        return this.out(this.os.wins().map(w => `${pad(w.id, 20)} ${w.min ? 'minimised' : w.max ? 'full screen' : `${Math.round(w.w)}×${Math.round(w.h)}`}`).join('\n') || 'no windows open');
+      case 'tile': return this.os.tile() ? this.out('tiled', 'ok') : this.out(this.os.mobile ? 'windows fill the screen on a phone' : 'no windows to tile', 'err');
+      case 'trace': {
+        const r = this.traces.runs()[0];
+        if (!r) return this.out('no AI requests yet this visit');
+        return this.out([`${r.title}  (${r.ms} ms)`, ...r.steps.map(s => `  ${s.ok ? '✓' : '✗'} ${pad(s.label, 34)} ${s.ms} ms`)].join('\n'));
       }
       case 'date':
         return this.out(new Intl.DateTimeFormat('en-IN', { dateStyle: 'full', timeStyle: 'long', timeZone: 'Asia/Kolkata' }).format(new Date()));
@@ -173,6 +231,8 @@ export class Terminal {
         if (/hire/i.test(arg)) { this.os.open('contact'); this.kai.say('Excellent decision. Opening the contact form.'); return this.out('[sudo] permission granted ✔  opening contact…', 'ok'); }
         return this.out('kishore is not in the sudoers file. This incident will be reported 😄  (try: sudo hire kishore)', 'err');
       default:
+        // plain English goes to ALPHA
+        if (windowCommand(line) || pageCommand(line) || (args.length && (/[?]$/.test(line) || /^(who|what|whats|where|when|why|how|which|does|do|did|is|are|can|has|have|find|tell|show|explain|give|compare|put|start|turn|take|please|hey|hello|hi)$/.test(c)))) return this.ask(line);
         return this.out(`kv-sh: command not found: ${cmd}. Type "help".`, 'err');
     }
   }

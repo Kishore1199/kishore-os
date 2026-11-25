@@ -9,14 +9,14 @@ import { EXPERIENCE, PROFILE } from '../data/portfolio.data';
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [Icon],
   template: `
-    <div class="icons" role="list" aria-label="Desktop apps">
+    <nav class="icons" aria-label="Desktop apps">
       @for (a of apps; track a.id) {
-        <button type="button" role="listitem" class="di" (click)="os.open(a.id)" [attr.aria-label]="'Open ' + a.title">
+        <button type="button" class="di" (click)="os.open(a.id)" [attr.aria-label]="'Open ' + a.title">
           <span class="ic" [style.--c]="a.color"><app-icon [name]="a.icon" [size]="24" /></span>
           <span class="lb">{{ a.title }}</span>
         </button>
       }
-    </div>
+    </nav>
 
     <aside class="widgets">
       <div class="w hello">
@@ -27,6 +27,7 @@ import { EXPERIENCE, PROFILE } from '../data/portfolio.data';
         <div class="row">
           <button type="button" class="btn hot" (click)="kai.tour()"><app-icon name="volume" [size]="15" /> Hear the tour</button>
           <button type="button" class="btn" (click)="kai.chatOpen.set(true)"><app-icon name="mic" [size]="15" /> Ask ALPHA</button>
+          <button type="button" class="btn" (click)="os.open('ailab')"><app-icon name="spark" [size]="15" /> AI Lab</button>
         </div>
       </div>
       <div class="w note">
@@ -36,7 +37,8 @@ import { EXPERIENCE, PROFILE } from '../data/portfolio.data';
           <li>Drag windows — and ALPHA 🤖 — anywhere</li>
           <li>🔊 <em>Explain</em> on any window — ALPHA reads it aloud</li>
           <li>Turn on 🎤 and say <b>“Alpha”</b></li>
-          <li>Type <code>alpha</code> in the Terminal</li>
+          <li>Say <b>“put projects next to skills”</b></li>
+          <li>Ask the Terminal a question, in plain English</li>
         </ul>
       </div>
     </aside>
@@ -58,7 +60,7 @@ import { EXPERIENCE, PROFILE } from '../data/portfolio.data';
     .role { font-weight: 600; color: var(--ink-2); }
     .live { display: flex; align-items: center; gap: 8px; margin: 12px 0 16px; font-size: 0.72rem; color: var(--teal); }
     .live i { width: 8px; height: 8px; border-radius: 50%; background: var(--teal); box-shadow: 0 0 10px var(--teal); flex-shrink: 0; }
-    .row { display: flex; gap: 8px; }
+    .row { display: flex; flex-wrap: wrap; gap: 8px; }
     .row .btn { flex: 1; padding: 10px 12px; }
     .note { animation-delay: 0.1s; background: color-mix(in srgb, #fde68a 18%, var(--glass)); }
     .note ul { margin: 8px 0 0; padding-left: 18px; display: grid; gap: 4px; font-size: 0.84rem; color: var(--ink-2); }

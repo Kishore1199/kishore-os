@@ -1,10 +1,12 @@
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, ElementRef, effect, inject, signal, untracked, viewChild } from '@angular/core';
+import { AssistantBus } from '../core/assistant.bus';
+import { ContactDraft } from '../core/contact-draft.service';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Icon } from '../core/icon';
 import { OsService } from '../core/os.service';
 import { EMAILJS, PROFILE } from '../data/portfolio.data';
 
-type Field = 'name' | 'email' | 'message';
+type Field = 'name' | 'email' | 'subject' | 'message';
 
 @Component({
   selector: 'app-contact',
@@ -25,6 +27,12 @@ type Field = 'name' | 'email' | 'message';
         }
       </div>
       <form [formGroup]="form" (ngSubmit)="send()" novalidate>
+        <div class="draft">
+          <label><span class="mono">Let ALPHA draft it (optional, uses Google Gemini)</span>
+            <span class="dr"><input #brief class="field" type="text" maxlength="600" placeholder="Java role in Chennai, can we talk this week?" (keydown.enter)="$event.preventDefault(); write(brief.value)" />
+              <button type="button" class="btn" (click)="write(brief.value)" [disabled]="drafting()"><app-icon name="spark" [size]="15" /> {{ drafting() ? 'Writing…' : 'Draft' }}</button></span></label>
+          @if (drafted(); as d) { <p class="note" role="status">{{ d }} <button type="button" (click)="undoDraft()">Undo</button></p> }
+        </div>
         @for (f of fields; track f.key) {
           <label>
             <span class="mono">{{ f.label }}</span>
@@ -53,6 +61,8 @@ type Field = 'name' | 'email' | 'message';
     form { display: grid; gap: 12px; align-content: start; padding: 18px; border-radius: 18px; background: var(--glass-2); border: 1px solid var(--line); }
     label { display: grid; gap: 5px; }
     label span { font-size: 0.68rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-3); }
+    .draft { display: grid; gap: 6px; padding-bottom: 12px; border-bottom: 1px dashed var(--line-2); } .dr { display: flex; gap: 8px; text-transform: none; letter-spacing: 0; } .dr .field { min-width: 0; flex: 1; } .dr .btn { padding: 9px 13px; }
+    .note { font-size: 0.8rem; color: var(--ink-2); } .note button { border: 0; background: none; padding: 0; color: var(--accent); font-weight: 600; cursor: pointer; text-decoration: underline; }
     textarea { resize: vertical; }
     em { font-style: normal; font-size: 0.78rem; color: #fb7185; }
     .st { font-size: 0.86rem; color: var(--teal); }
@@ -72,19 +82,54 @@ export class Contact {
   protected readonly fields: { key: Field; label: string; ph: string }[] = [
     { key: 'name', label: 'Name', ph: 'Your name' },
     { key: 'email', label: 'Email', ph: 'you@company.com' },
+    { key: 'subject', label: 'Subject', ph: 'What is this about?' },
     { key: 'message', label: 'Message', ph: 'Tell me about the role or project…' },
   ];
   protected readonly form = inject(FormBuilder).nonNullable.group({
     name: ['', [Validators.required, Validators.minLength(2)]],
     email: ['', [Validators.required, Validators.email]],
+    subject: ['', [Validators.required, Validators.minLength(3)]],
     message: ['', [Validators.required, Validators.minLength(10)]],
   });
   protected readonly sending = signal(false);
   protected readonly status = signal<{ ok: boolean; text: string } | null>(null);
   private tick = signal(0);
 
+  private writer = inject(ContactDraft);
+  private brief = viewChild<ElementRef<HTMLInputElement>>('brief');
+  protected readonly drafting = signal(false);
+  protected readonly drafted = signal('');
+  private before: { subject: string; message: string } | null = null;
+  private ctrl?: AbortController;
+
   constructor() {
     this.form.events.subscribe(() => this.tick.update(n => n + 1));
+    inject(DestroyRef).onDestroy(() => this.ctrl?.abort());
+    const bus = inject(AssistantBus);
+    // ALPHA drafted something in the chat or in a tool
+    effect(() => { const d = bus.draft(); if (d && d.n !== bus.usedDraft) untracked(() => { bus.usedDraft = d.n; this.useDraft(d.subject, d.message, 'Drafted by ALPHA. Please check it, then press Send.'); }); });
+    effect(() => { const box = this.brief()?.nativeElement; if (bus.draftStart() !== bus.usedStart && box) { bus.usedStart = bus.draftStart(); box.focus({ preventScroll: true }); } });
+  }
+
+  /** Draft only: sending always needs the visitor to press Send. */
+  protected async write(brief: string) {
+    if (this.drafting()) return;
+    if (brief.trim().length < 8) { this.brief()?.nativeElement.focus(); return; }
+    this.drafting.set(true);
+    const ctrl = this.ctrl = new AbortController();
+    const d = await this.writer.write(brief, ctrl.signal);
+    this.drafting.set(false);
+    if (!ctrl.signal.aborted) this.useDraft(d.subject, d.message, d.ai ? 'Drafted by AI. Please check it, then press Send.' : "AI wasn't available, so this is a simple template. Please check it, then press Send.");
+  }
+  private useDraft(subject: string, message: string, note: string) {
+    if (!this.drafted()) { const { subject: s, message: m } = this.form.getRawValue(); this.before = { subject: s, message: m }; }
+    this.form.patchValue({ subject, message });
+    this.drafted.set(note);
+  }
+  protected undoDraft() {
+    if (this.before) this.form.patchValue(this.before);
+    this.before = null;
+    this.drafted.set('');
   }
   protected err(f: Field) {
     this.tick();
@@ -101,10 +146,12 @@ export class Contact {
     try {
       const { default: emailjs } = await import('@emailjs/browser');
       const v = this.form.getRawValue();
-      await emailjs.send(EMAILJS.serviceId, EMAILJS.templateId, { from_name: v.name, from_email: v.email, subject: 'Kishore.OS message', message: v.message }, { publicKey: EMAILJS.publicKey });
+      await emailjs.send(EMAILJS.serviceId, EMAILJS.templateId, { from_name: v.name, from_email: v.email, subject: v.subject, message: v.message }, { publicKey: EMAILJS.publicKey });
       this.status.set({ ok: true, text: "Thanks! Message sent — I'll reply soon." });
       this.os.react('party', 2600);
       this.form.reset();
+      this.drafted.set('');
+      this.before = null;
     } catch {
       this.status.set({ ok: false, text: 'Could not send right now — please email me directly.' });
     } finally {

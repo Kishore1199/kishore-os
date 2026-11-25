@@ -1,4 +1,5 @@
-import { ChangeDetectionStrategy, Component, computed, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import { AssistantBus } from '../core/assistant.bus';
 import { Icon } from '../core/icon';
 import { STUDY_GUIDES, StudyTopic } from '../data/study.data';
 
@@ -17,6 +18,13 @@ import { STUDY_GUIDES, StudyTopic } from '../data/study.data';
         </div>
         <label class="find"><app-icon name="search" [size]="14" /><input [value]="q()" (input)="q.set($any($event.target).value)" placeholder="JWT, Kafka, DP…" aria-label="Find a chapter" /></label>
         <a class="btn hot sm" [href]="guide().file" target="_blank" rel="noopener"><app-icon name="book-open" [size]="14" /> Open full guide</a>
+      </div>
+      <div class="do" role="group" aria-label="Practise">
+        <button type="button" class="btn sm" (click)="bus.openInterview()"><app-icon name="mic" [size]="14" /> Mock interview</button>
+        <button type="button" class="btn sm" (click)="bus.openLab('quiz')"><app-icon name="list-check" [size]="14" /> Quiz</button>
+        <button type="button" class="btn sm" (click)="bus.openLab('daily')"><app-icon name="calendar" [size]="14" /> Daily challenge</button>
+        <button type="button" class="btn sm" (click)="bus.openLab('semantic')"><app-icon name="search" [size]="14" /> Search by meaning</button>
+        <button type="button" class="btn sm" (click)="bus.openLab('roadmap')"><app-icon name="flag" [size]="14" /> Roadmap</button>
       </div>
       <div class="cols">
         @for (gr of groups(); track gr.name) {
@@ -39,6 +47,7 @@ import { STUDY_GUIDES, StudyTopic } from '../data/study.data';
     .seg small { opacity: 0.7; font-family: var(--mono); }
     .find { flex: 1; min-width: 160px; display: flex; align-items: center; gap: 6px; padding: 8px 12px; border-radius: 12px; border: 1px solid var(--line-2); color: var(--ink-3); }
     .find input { flex: 1; min-width: 0; border: 0; outline: 0; background: none; color: var(--ink); }
+    .do { display: flex; flex-wrap: wrap; gap: 8px; }
     .sm { padding: 8px 14px; font-size: 0.8rem; }
     .cols { columns: 3 250px; column-gap: 14px; }
     section { break-inside: avoid; margin-bottom: 14px; padding: 14px; border-radius: 16px; background: var(--glass-2); border: 1px solid var(--line); }
@@ -52,6 +61,7 @@ import { STUDY_GUIDES, StudyTopic } from '../data/study.data';
   `,
 })
 export class Notes {
+  protected readonly bus = inject(AssistantBus);
   protected readonly guides = STUDY_GUIDES;
   protected readonly gk = signal(STUDY_GUIDES[0].key);
   protected readonly q = signal('');

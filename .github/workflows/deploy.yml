@@ -20,6 +20,7 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
+      - run: npm run evals
       - run: npx ng build
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:

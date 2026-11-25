@@ -62,3 +62,25 @@ img { max-width: 100%; display: block; }
 ::view-transition-old(root), ::view-transition-new(root) { animation-duration: 0.28s; }
 @keyframes fade-up { from { opacity: 0; transform: translateY(10px) scale(0.98); } }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; } }
+
+/* names used by the AI files shared with the 3D site */
+:root {
+  --text: var(--ink); --text-2: var(--ink-2); --text-3: var(--ink-3);
+  --surface: var(--glass); --surface-2: var(--glass-2); --surface-solid: var(--solid); --bg-2: var(--bg);
+  --border: var(--line); --border-strong: var(--line-2);
+  --accent-2: #ff9a62; --accent-deep: #c2410c;
+  --accent-soft: color-mix(in srgb, var(--accent) 13%, transparent);
+  --glow: color-mix(in srgb, var(--accent) 40%, transparent);
+}
+.btn-primary { border: 0; color: #fff; background: linear-gradient(135deg, #c2410c, #9a3412); }
+.btn-ghost { background: var(--glass-2); }
+.btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+.icon-btn { display: inline-grid; place-items: center; width: 38px; height: 38px; border-radius: 11px; border: 1px solid var(--line-2); background: var(--glass-2); color: var(--ink-2); cursor: pointer; }
+.icon-btn:hover { color: var(--accent); border-color: var(--accent); }
+/* sized by its window, not by the screen */
+.ailab { container-type: size; height: 100%; overflow: hidden auto; padding: 18px 22px 18px; }
+@container (min-width: 761px) {
+  .ailab .ask, .ailab .bar { margin-right: 190px; } /* room for the Orbit / List switch */
+  .ailab .console { padding-right: 104px !important; } /* ALPHA stands in this corner */
+}
+@media (max-width: 760px) { .ailab { padding: 14px 14px 190px; } }

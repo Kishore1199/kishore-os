@@ -37,3 +37,7 @@ Firebase setup steps: [FIREBASE_SETUP.md](FIREBASE_SETUP.md) · How everything w
 ## Contact
 
 📧 kishorebe1199@gmail.com · 💼 [LinkedIn](https://www.linkedin.com/in/kishore-v-a64b2417b/) · 🐙 [GitHub](https://github.com/Kishore1199)
+
+## AI features
+
+The AI Lab holds 76 options, and ALPHA is an agent that can work the desktop. What was built and how: [AI_IMPLEMENTATION_PLAN.md](AI_IMPLEMENTATION_PLAN.md). Agent tests: `npm run evals`.

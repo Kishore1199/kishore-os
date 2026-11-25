@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, OnDestroy, inject, signal } from '@angular/core';
+import { DetectiveView, RaceView, RpsView, StudioView } from '../lab/game-views';
 import { Icon } from '../core/icon';
 import { SkillIcon } from '../core/skill-icon';
 
@@ -12,15 +13,21 @@ const TECH = [
 const best = (k: string) => { try { return Number(localStorage.getItem(k)) || 0; } catch { return 0; } };
 const save = (k: string, v: number) => { try { localStorage.setItem(k, String(v)); } catch { /* ignore */ } };
 
+type Game = 'bugs' | 'match' | 'detective' | 'rps' | 'race' | 'studio';
+
 @Component({
   selector: 'app-arcade',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [Icon, SkillIcon],
+  imports: [Icon, SkillIcon, DetectiveView, RaceView, RpsView, StudioView],
   template: `
     <div class="inner">
           <div class="tabs">
             <button type="button" [class.on]="game() === 'bugs'" (click)="switchTo('bugs')"><app-icon name="bug" [size]="15" /> Bug squash</button>
             <button type="button" [class.on]="game() === 'match'" (click)="switchTo('match')"><app-icon name="layers" [size]="15" /> Stack match</button>
+            <button type="button" [class.on]="game() === 'detective'" (click)="switchTo('detective')"><app-icon name="search" [size]="15" /> Detective</button>
+            <button type="button" [class.on]="game() === 'rps'" (click)="switchTo('rps')"><app-icon name="zap" [size]="15" /> Rock paper scissors</button>
+            <button type="button" [class.on]="game() === 'race'" (click)="switchTo('race')"><app-icon name="keyboard" [size]="15" /> Typing race</button>
+            <button type="button" [class.on]="game() === 'studio'" (click)="switchTo('studio')"><app-icon name="bot" [size]="15" /> Robot studio</button>
           </div>
 
           @if (game() === 'bugs') {
@@ -39,7 +46,11 @@ const save = (k: string, v: number) => { try { localStorage.setItem(k, String(v)
                 </div>
               }
             </div>
-          } @else {
+          } @else if (game() === 'detective') { @defer (on immediate) { <div class="new"><app-detective /></div> } }
+          @else if (game() === 'rps') { @defer (on immediate) { <div class="new"><app-rps /></div> } }
+          @else if (game() === 'race') { @defer (on immediate) { <div class="new"><app-race /></div> } }
+          @else if (game() === 'studio') { @defer (on immediate) { <div class="new"><app-studio /></div> } }
+          @else {
             <div class="hud mono">
               <span>moves <b>{{ moves() }}</b></span><span>pairs <b>{{ pairs() }}/8</b></span><span><app-icon name="trophy" [size]="13" /> best <b>{{ matchBest() || '—' }}</b></span>
               <button type="button" class="reset" (click)="newMatch()"><app-icon name="refresh" [size]="13" /> shuffle</button>
@@ -58,7 +69,8 @@ const save = (k: string, v: number) => { try { localStorage.setItem(k, String(v)
   `,
   styles: `
     .inner { padding: 20px 24px 28px; }
-    .tabs { display: flex; gap: 6px; margin-bottom: 14px; }
+    .new { display: grid; gap: 14px; }
+    .tabs { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; }
     .tabs button { display: inline-flex; align-items: center; gap: 7px; padding: 9px 16px; border-radius: 999px; border: 1px solid var(--line-2); background: none; cursor: pointer; font-weight: 600; font-size: 0.86rem; }
     .tabs button.on { background: var(--accent); border-color: var(--accent); color: #fff; }
     .hud { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; margin-bottom: 12px; font-size: 0.82rem; color: var(--ink-2); }
@@ -88,7 +100,7 @@ const save = (k: string, v: number) => { try { localStorage.setItem(k, String(v)
   `,
 })
 export class Arcade implements OnDestroy {
-  protected readonly game = signal<'bugs' | 'match'>('bugs');
+  protected readonly game = signal<Game>('bugs');
 
   // ── bug squash ──
   protected readonly bugs = signal<Bug[]>([]);
@@ -161,7 +173,7 @@ export class Arcade implements OnDestroy {
     }
   }
 
-  protected switchTo(g: 'bugs' | 'match') {
+  protected switchTo(g: Game) {
     this.endBugs();
     this.played.set(false);
     this.game.set(g);

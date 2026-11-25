@@ -2,6 +2,11 @@ import { ChangeDetectionStrategy, Component, ElementRef, afterNextRender, comput
 import { Icon } from '../core/icon';
 import { KaiService } from '../core/kai.service';
 import { APPS, OsService } from '../core/os.service';
+import { AiLauncher } from '../sections/ai-launcher.service';
+import { AI_FEATURES } from '../data/ai-features.data';
+import { windowCommand } from '../core/window-commands';
+import { pageCommand } from '../core/page-commands';
+import { AssistantBus } from '../core/assistant.bus';
 import { ThemeService } from '../core/theme.service';
 import { PROFILE, PROJECTS, SKILL_CATEGORIES } from '../data/portfolio.data';
 import { STUDY_GUIDES } from '../data/study.data';
@@ -18,7 +23,7 @@ interface Item { kind: string; label: string; sub: string; icon: string; run: ()
       <div class="box" role="dialog" aria-label="Spotlight search" (click)="$event.stopPropagation()">
         <label class="in">
           <app-icon name="search" [size]="20" />
-          <input #inp [value]="q()" (input)="q.set($any($event.target).value); sel.set(0)" (keydown)="key($event)" placeholder="Search apps, projects, skills, 84 study chapters…" aria-label="Search" />
+          <input #inp [value]="q()" (input)="q.set($any($event.target).value); sel.set(0)" (keydown)="key($event)" placeholder="Search, or ask a question…" aria-label="Search" />
           <kbd class="mono">esc</kbd>
         </label>
         <ul role="listbox">
@@ -30,7 +35,7 @@ interface Item { kind: string; label: string; sub: string; icon: string; run: ()
             </li>
           } @empty { <li class="none mono">Nothing found — try "spring", "docker" or "dp"</li> }
         </ul>
-        <p class="foot mono">↑↓ to move · enter to open · tip: you can also ask ALPHA out loud</p>
+        <p class="foot mono">↑↓ to move · enter to open · questions go to ALPHA</p>
       </div>
     </div>
   `,
@@ -56,6 +61,8 @@ interface Item { kind: string; label: string; sub: string; icon: string; run: ()
 export class Spotlight {
   protected readonly os = inject(OsService);
   private kai = inject(KaiService);
+  private launcher = inject(AiLauncher);
+  private bus = inject(AssistantBus);
   private theme = inject(ThemeService);
   private inp = viewChild.required<ElementRef<HTMLInputElement>>('inp');
   protected readonly q = signal('');
@@ -68,7 +75,8 @@ export class Spotlight {
     { kind: 'action', label: 'Copy email address', sub: PROFILE.email, icon: 'copy', run: () => this.os.copy(PROFILE.email, 'Email') },
     { kind: 'action', label: 'Turn "Alpha" wake word on/off', sub: 'Wake ALPHA with your voice', icon: 'mic', run: () => this.kai.toggleWake() },
     { kind: 'action', label: 'Ask ALPHA', sub: 'Open the voice assistant', icon: 'mic', run: () => this.kai.chatOpen.set(true) },
-    ...PROJECTS.map(p => ({ kind: 'project', label: p.title, sub: `${p.org} · ${p.period}`, icon: 'folder', run: () => this.os.open('projects') })),
+    ...PROJECTS.map(p => ({ kind: 'project', label: p.title, sub: `${p.org} · ${p.period}`, icon: 'folder', run: () => this.bus.showProject(p.title) })),
+    ...AI_FEATURES.filter(f => f.action).map(f => ({ kind: 'ai', label: f.title, sub: f.text, icon: f.icon, run: () => this.launcher.run(f) })),
     ...SKILL_CATEGORIES.flatMap(c => c.skills.map(s => ({ kind: 'skill', label: s.name, sub: c.name, icon: 'layers', run: () => this.os.open('skills') }))),
     ...STUDY_GUIDES.flatMap(g => g.topics.map(t => ({ kind: 'chapter', label: t.title, sub: `${g.short} · ${t.questions} questions`, icon: 'book-open', run: () => window.open(`${g.file}#${t.id}`, '_blank', 'noopener') }))),
   ];
@@ -77,7 +85,12 @@ export class Spotlight {
     const q = this.q().trim().toLowerCase();
     if (!q) return this.all.filter(i => i.kind === 'app' || i.kind === 'action').slice(0, 14);
     const score = (i: Item) => { const l = i.label.toLowerCase(); return l.startsWith(q) ? 0 : l.includes(q) ? 1 : i.sub.toLowerCase().includes(q) ? 2 : 9; };
-    return this.all.map(i => ({ i, s: score(i) })).filter(x => x.s < 9).sort((a, b) => a.s - b.s).slice(0, 40).map(x => x.i);
+    const found = this.all.map(i => ({ i, s: score(i) })).filter(x => x.s < 9).sort((a, b) => a.s - b.s).slice(0, 40).map(x => x.i);
+    // a question, a command, or something nothing is named after: ask ALPHA
+    const raw = this.q().trim();
+    const ask: Item = { kind: 'ask', label: `Ask ALPHA: ${raw}`, sub: windowCommand(raw) || pageCommand(raw) ? 'Do this' : 'Answer in the chat', icon: 'spark', run: () => { this.kai.chatOpen.set(true); void this.kai.ask(raw); } };
+    const asking = /[?]$|^(who|what|where|when|why|how|does|did|is|are|can|has|have|tell|explain|put|tile|close|show|start)\b/i.test(raw) && raw.includes(' ') || !!windowCommand(raw);
+    return asking || !found.length ? [ask, ...found] : raw.length > 2 ? [...found, ask] : found;
   });
 
   constructor() {

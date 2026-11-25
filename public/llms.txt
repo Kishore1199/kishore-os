@@ -1,0 +1,36 @@
+# Kishore V
+
+> Java Full Stack Developer in Chennai, Tamilnadu, India. Currently Software Developer at Kaaspro Enterprises. Open to Java full-stack roles and freelance work.
+
+Contact through the form at https://kishore-os.web.app/#contact or https://www.linkedin.com/in/kishore-v-a64b2417b/
+
+## Experience
+- Software Developer, Kaaspro Enterprises (Dec 2024 – Present, 2 years): Developing and maintaining web applications using Java, Spring Boot, Hibernate, Angular, and MySQL — including the 75Health cloud EHR platform — and upgrading the PHP-based 75Health EMR (OpenEMR) using AI tools. This role has strengthened my problem-solving abilities, adaptability, and knowledge of Microservices, HTML, CSS, and TypeScript. Technology: Java 21, Spring Boot, Spring Security, Hibernate, Angular 17, MySQL, MongoDB, Gradle, Microservices, TypeScript, PHP 8.4, OpenEMR, Docker.
+- Java Full Stack Developer Intern, Techietact Solutions Pvt Ltd (Internship, 1 year): Hands-on experience as a Java Full Stack Developer building web applications with Java, Spring Boot, Hibernate, Angular, JSP, Servlets, and MySQL, while learning industry-standard development practices. Technology: Java, Spring Boot, Hibernate, Angular, JSP, Servlets, MySQL.
+
+## Projects
+- [75Health EHR](https://ehr.75health.com) (Kaaspro Enterprises, Dec 2024 – Present): Cloud-based EHR platform for clinics & hospitals worldwide; Patient records, clinical documentation, SOAP charts & e-prescriptions; Appointment scheduling and lab integration. Technology: Java 21, Spring Boot, Spring Security, Hibernate 6.x, Angular 17, MySQL, MongoDB, Gradle, Log4j, GitHub.
+- [75Health EMR](https://emr.75health.com) (Kaaspro Enterprises, Mar 2026 – Present): Cloud EMR SaaS for 75Health, built on the open-source OpenEMR platform; Upgraded end-to-end to OpenEMR 8 / PHP 8.4 using AI tools (Claude Code, GitHub Copilot); Multi-tenant SaaS: self-service clinic signup with Free & Premium plan limits (patients, users, appointments, storage). Technology: PHP 8.4, OpenEMR 8, MariaDB, Docker, FHIR R4, JavaScript, jQuery, Twig, Google Cloud, Sentry, Playwright, Claude Code.
+- [75Health Website](https://75health.com) (Kaaspro Enterprises, Dec 2024 – Present): Cloud EHR/EMR platform driving digital transformation for practices in multiple countries; Responsive product showcase website for the EHR/EMR solution; Improved UI layout and structured content hierarchy. Technology: Angular 17, Bootstrap, HTML, CSS, TypeScript.
+- [Kaaspro Website](https://kaaspro.com) (Kaaspro Enterprises, Dec 2024 – Present): Responsive website for an IT services company; Showcases web development, cloud and mobile-app services; Structured content for better readability & navigation. Technology: HTML, CSS, Bootstrap, Java.
+- MySales – CRM (Techietact Solutions, Internship): CRM platform to manage customer interactions & sales; Centralized customer data storage & organization; Sales activity tracking and team communication. Technology: Java, Spring Boot 3.x, Angular 16, Microservices, Spring Cloud API Gateway 2022.0.2, Spring Security, Hibernate 6.x, Maven, MySQL.
+- MyCognitiv – Online Exams (Techietact Solutions, Internship): Online exam planning & management for organizations; Question creation, results & category modules; Multi-layer architecture: rich UI, business delegates & business layers. Technology: Java 8, Spring MVC 4.x, Spring Security, Hibernate 5.x, JSP, MySQL, Maven, Log4j, AJAX, GitHub.
+
+## Skills
+- Backend: Java, Spring Boot, Spring, Hibernate, Spring Security, JPA, JWT, Microservices, Servlets, JSP, JDBC, REST APIs, Eureka, Spring Cloud API Gateway, Kafka, PHP, OpenEMR, FHIR R4
+- Frontend: Angular, TypeScript, JavaScript, HTML, CSS, SCSS, SASS, Bootstrap, Ionic Framework, jQuery, Twig
+- Database & DevOps: MySQL, MongoDB, MariaDB, Firebase, Jenkins, GitHub, SVN, Maven, Gradle, Splunk, Docker, Google Cloud, Sentry
+- Testing & Process: Manual Testing, Playwright, Agile, Log4j & SLF4J, Jasper Studio, Spring AOP
+- Tools & IDEs: Eclipse, Spring Tool Suite, VS Code, Postman
+- AI Tools: Claude AI, Claude Code, GitHub Copilot, Google Gemini, ChatGPT, DeepSeek
+
+## Education
+- Secondary School Leaving Certificate, Sri Ragavendra Matric Hr. Sec. School, Veeraganur (2013 – 2014)
+- Higher Secondary Certificate, Sri Ragavendra Matric Hr. Sec. School, Veeraganur (2014 – 2016)
+- Bachelor of Mechanical Engineering, M.Kumarasamy College of Engineering, Karur (2016 – 2020)
+
+## Links
+- [Resume](https://kishore-os.web.app/assets/Kishore_Resume.pdf)
+- [GitHub](https://github.com/Kishore1199)
+- [LinkedIn](https://www.linkedin.com/in/kishore-v-a64b2417b/)
+- [AI tools on this site](https://kishore-os.web.app/#ailab)
