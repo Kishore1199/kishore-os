@@ -20,5 +20,5 @@ EDUCATION:
 ${edu}${compact ? '' : `
 INTERVIEW-PREP NOTES ON THIS SITE (chapter titles):
 ${notes}`}
-THIS SITE: Kishore.OS — Kishore's portfolio as a small desktop operating system, built with Angular 22 and three.js. Its apps open in windows: About Me, Projects, Experience (with education), Skills, Study Notes, Terminal, Contact, AI Lab, Files, Guestbook, Arcade, System Monitor and Resume. It has a dock, Spotlight search (Ctrl K), a menu bar, and ALPHA the voice guide.`;
+THIS SITE: Kishore.OS — Kishore's portfolio as a small desktop operating system, built with Angular 22 and three.js. Its apps open in windows: About Me, Projects, Experience (with education), Skills, Study Notes, Terminal, Contact, AI Lab, Files, Wallpaper, Guestbook, Arcade, System Monitor and Resume. It has a dock, Spotlight search (Ctrl K), a menu bar, and ALPHA the voice guide.`;
 }

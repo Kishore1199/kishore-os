@@ -34,6 +34,7 @@ import { PROFILE } from '../data/portfolio.data';
           <hr />
           <button type="button" role="menuitem" (click)="os.tile() || os.notify('Open some windows first')"><app-icon name="grid" [size]="14" /> Tile windows</button>
           <button type="button" role="menuitem" (click)="os.cascade() || os.notify('Open some windows first')"><app-icon name="layers" [size]="14" /> Stack windows</button>
+          <button type="button" role="menuitem" (click)="os.open('wallpaper')"><app-icon name="image" [size]="14" /> Change wallpaper</button>
           <button type="button" role="menuitem" (click)="icons.reset(); os.notify('Icons are back in their places')"><app-icon name="refresh" [size]="14" /> Put icons back</button>
           <button type="button" role="menuitemcheckbox" [attr.aria-checked]="pet.on()" (click)="pet.set(!pet.on())"><app-icon name="bot" [size]="14" /> Let ALPHA walk <kbd>{{ pet.on() ? 'on' : 'off' }}</kbd></button>
           <button type="button" role="menuitemcheckbox" [attr.aria-checked]="mood.on()" (click)="mood.toggle()"><app-icon name="sun" [size]="14" /> Wallpaper mood <kbd>{{ mood.on() ? 'on' : 'off' }}</kbd></button>

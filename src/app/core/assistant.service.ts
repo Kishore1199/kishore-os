@@ -15,6 +15,7 @@ import { NotificationService } from './notification.service';
 import { OsService as Desktop } from './os.service';
 import { PetService } from './pet.service';
 import { SessionService } from './session.service';
+import { WallpaperService } from './wallpaper.service';
 import { WinCmd, windowCommand } from './window-commands';
 import { ThemeService, prefersReducedMotion } from './theme.service';
 import { SavedStore } from '../lab/saved.store';
@@ -40,6 +41,7 @@ export class AssistantService {
   private desktop = inject(Desktop);
   private pet = inject(PetService);
   private session = inject(SessionService);
+  private paper = inject(WallpaperService);
   private notifications = inject(NotificationService);
   readonly voice = inject(VoiceService);
   readonly cloud = inject(CloudService);
@@ -386,6 +388,7 @@ export class AssistantService {
       case 'desktop': this.desktop.minimizeAll(); this.chatOpen.set(false); break;
       case 'spotlight': this.desktop.spotlight.set(true); break;
       case 'pet-on': this.chatOpen.set(false); this.pet.set(true); break;
+      case 'paper-reset': this.paper.reset(); break;
       case 'pet-off': this.pet.set(false); break;
     }
   }
@@ -418,6 +421,7 @@ export class AssistantService {
     this.traces.clear();
     this.talk.reset();
     this.session.forget();
+    this.paper.forget();
     this.notifications.clear();
     try { localStorage.removeItem('kv-daily'); } catch { /* storage unavailable */ }
     try { sessionStorage.removeItem(CHAT_KEY); } catch { /* storage unavailable */ }

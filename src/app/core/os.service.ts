@@ -2,7 +2,7 @@ import { Injectable, computed, signal } from '@angular/core';
 import { AI_FEATURES } from '../data/ai-features.data';
 import { LabId, labId } from '../lab/lab-ids';
 
-export type AppId = 'about' | 'projects' | 'experience' | 'skills' | 'notes' | 'terminal' | 'contact' | 'games' | 'monitor' | 'resume' | 'guestbook' | 'ailab' | 'files';
+export type AppId = 'about' | 'projects' | 'experience' | 'skills' | 'notes' | 'terminal' | 'contact' | 'games' | 'monitor' | 'resume' | 'guestbook' | 'ailab' | 'files' | 'wallpaper';
 /** an AI Lab tool in its own window */
 export type ToolId = `tool:${LabId}`;
 export type WinId = AppId | ToolId;
@@ -19,6 +19,7 @@ export const APPS: (AppDef & { id: AppId })[] = [
   { id: 'contact', title: 'Contact', icon: 'mail', color: '#ec4899', w: 820, h: 600, dock: true },
   { id: 'ailab', title: 'AI Lab', icon: 'spark', color: '#22d3ee', w: 1080, h: 720, dock: true },
   { id: 'files', title: 'Files', icon: 'folder', color: '#0ea5e9', w: 820, h: 560 },
+  { id: 'wallpaper', title: 'Wallpaper', icon: 'image', color: '#db2777', w: 720, h: 680 },
   { id: 'guestbook', title: 'Guestbook', icon: 'message', color: '#f59e0b', w: 900, h: 640 },
   { id: 'games', title: 'Arcade', icon: 'gamepad', color: '#ef4444', w: 760, h: 600 },
   { id: 'monitor', title: 'System Monitor', icon: 'activity', color: '#06b6d4', w: 900, h: 640 },

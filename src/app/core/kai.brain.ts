@@ -23,6 +23,7 @@ export const NARRATION: Record<AppId, string> = {
   games: `The arcade has nine quick games: Bug Squash, Stack Match, Coffee Catch, Three in a Row, Quick Tap, Rock Paper Scissors, Skill Detective, a code typing race, and a studio where you direct me.`,
   monitor: `The system monitor shows how this site itself is built, with live frame rate and load time, what my agent is doing, and a simplified map of the 75Health EHR architecture. Click any block to learn what it does.`,
   ailab: `This is the AI Lab. It holds every AI option on Kishore O S: the job matcher, coding and diagram tools, games, and more. Each tool opens in its own window.`,
+  wallpaper: `Choose your own desktop background here. Upload a picture, or pick one of the ready made ones. Your picture stays in this browser and is never uploaded.`,
   files: `These are your files. Results you save from the AI Lab appear here, next to Kishore's resume and study guides. They stay in this browser.`,
   guestbook: `This is the guestbook. Leave a short note for Kishore, pick a sticky-note colour, and it appears on the wall for every visitor in real time.`,
   resume: `This is Kishore's resume as a PDF. You can read it here or download it with the button at the top.`,

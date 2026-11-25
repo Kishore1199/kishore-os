@@ -44,6 +44,7 @@ interface Drag { id: AppId; x: number; y: number; dx: number; dy: number; on: bo
     .di:hover .ic { transform: translateY(-3px) scale(1.05); }
     .lb { font-size: 0.74rem; font-weight: 600; text-align: center; line-height: 1.2; text-shadow: 0 1px 6px rgba(0,0,0,0.45); color: #fff; pointer-events: none; }
     :host-context([data-theme='light']) .lb { color: var(--ink); text-shadow: none; }
+    :host-context([data-wallpaper]) .lb { color: #fff; text-shadow: 0 1px 2px #000, 0 0 8px rgba(0, 0, 0, 0.85); }
     .drop { position: absolute; height: ${H - 4}px; border-radius: 14px; border: 2px dashed var(--accent); background: color-mix(in srgb, var(--accent) 12%, transparent); }
     :host(.phone) { position: static; display: block; } :host(.phone) .di { touch-action: pan-y; }
     @media (prefers-reduced-motion: reduce) { .di.ready { transition: none; } }

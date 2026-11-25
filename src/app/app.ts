@@ -25,12 +25,13 @@ import { Resume } from './apps/resume';
 import { Guestbook } from './apps/guestbook';
 import { AiCatalog } from './sections/ai-catalog';
 import { Files } from './apps/files';
+import { WallpaperApp } from './apps/wallpaper-app';
 import { LabDialog } from './lab/lab-dialog';
 
 @Component({
   selector: 'app-root',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [Icon, Wallpaper, Boot, Menubar, Desktop, Dock, WindowFrame, Assistant, Notifications, AiCatalog, Files, LabDialog, Spotlight, About, Projects, Experience, Skills, Notes, Terminal, Contact, Arcade, Monitor, Resume, Guestbook],
+  imports: [Icon, Wallpaper, Boot, Menubar, Desktop, Dock, WindowFrame, Assistant, Notifications, AiCatalog, Files, WallpaperApp, LabDialog, Spotlight, About, Projects, Experience, Skills, Notes, Terminal, Contact, Arcade, Monitor, Resume, Guestbook],
   host: { '(document:keydown)': 'key($event)', '(window:hashchange)': 'hash()' },
   template: `
     <app-wallpaper />
@@ -53,6 +54,7 @@ import { LabDialog } from './lab/lab-dialog';
             @case ('resume') { <app-resume /> }
             @case ('guestbook') { <app-guestbook /> }
             @case ('ailab') { @defer (on immediate) { <div class="ailab"><app-ai-catalog /></div> } }
+            @case ('wallpaper') { @defer (on immediate) { <app-wallpaper-app /> } }
             @case ('files') { @defer (on immediate) { <app-files /> } }
             @default { @if (tool(w.id); as t) { @defer (on immediate) { <app-lab [id]="t" [seed]="os.seeds.get(w.id) ?? {}" (close)="os.close(w.id)" /> } @loading { <p class="wait mono">Opening…</p> } } }
           }

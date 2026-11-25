@@ -2,6 +2,7 @@ import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, OnDestro
 import { ThemeService } from '../core/theme.service';
 import { OsService } from '../core/os.service';
 import { VoiceService } from '../core/voice.service';
+import { WallpaperService } from '../core/wallpaper.service';
 import { WallpaperMood, tint } from '../core/wallpaper-mood.service';
 
 const FRAG = /* glsl */ `
@@ -44,8 +45,13 @@ void main(){
   selector: 'app-wallpaper',
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: { 'aria-hidden': 'true' },
-  template: `<canvas #cv></canvas>`,
-  styles: `:host { position: fixed; inset: 0; z-index: 0; background: var(--bg); } canvas { width: 100%; height: 100%; display: block; }`,
+  template: `
+    <canvas #cv [class.off]="!paper.aurora()"></canvas>
+    @if (paper.preset(); as css) { <div class="fill" [style.background]="css"></div> }
+    @if (paper.show() === 'photo' && paper.photo()) { <img class="fill" [src]="paper.photo()" alt="" [style.object-fit]="paper.fit()" draggable="false" /> }
+    @if (!paper.aurora()) { <div class="fill" [style.background]="'rgb(5 4 12 / ' + paper.dim() + ')'"></div> }
+  `,
+  styles: `:host { position: fixed; inset: 0; z-index: 0; background: var(--bg); } canvas { width: 100%; height: 100%; display: block; } .off { display: none; } .fill { position: absolute; inset: 0; width: 100%; height: 100%; max-width: none; }`,
 })
 export class Wallpaper implements AfterViewInit, OnDestroy {
   private cv = viewChild.required<ElementRef<HTMLCanvasElement>>('cv');
@@ -53,6 +59,10 @@ export class Wallpaper implements AfterViewInit, OnDestroy {
   private voice = inject(VoiceService);
   private os = inject(OsService);
   private mood = inject(WallpaperMood);
+  protected readonly paper = inject(WallpaperService);
+  private started = false;
+  private ready = false;
+  private resume?: () => void;
   private feeling: string | null = null;
   private cleanup: (() => void)[] = [];
   private setColors?: () => void;
@@ -60,10 +70,19 @@ export class Wallpaper implements AfterViewInit, OnDestroy {
   constructor() {
     let t: ReturnType<typeof setTimeout>;
     effect(() => { const e = this.os.emote(); if (!e) return; this.feeling = e.mood; clearTimeout(t); t = setTimeout(() => (this.feeling = null), e.ms + 1500); });
+    // the aurora only runs while it can be seen
+    effect(() => { if (this.paper.aurora()) { if (this.ready) void this.start(); this.resume?.(); } });
     effect(() => { this.theme.isDark(); requestAnimationFrame(() => this.setColors?.()); });
   }
 
-  async ngAfterViewInit() {
+  ngAfterViewInit() {
+    this.ready = true;
+    if (this.paper.aurora()) void this.start();
+  }
+
+  private async start() {
+    if (this.started) return;
+    this.started = true;
     const T = await import('three');
     const canvas = this.cv().nativeElement;
     let renderer: import('three').WebGLRenderer;
@@ -98,6 +117,8 @@ export class Wallpaper implements AfterViewInit, OnDestroy {
     const aim = new T.Color();
     let raf = 0, last = performance.now(), t = 20;
     const loop = (now: number) => {
+      raf = 0;
+      if (!this.paper.aurora()) return;
       raf = requestAnimationFrame(loop);
       if (document.hidden || now - last < 1000 / 40) return; // ~40 fps is plenty for a slow aurora
       t += (now - last) / 1000;
@@ -109,7 +130,8 @@ export class Wallpaper implements AfterViewInit, OnDestroy {
       u.uLevel.value += (this.voice.level() - u.uLevel.value) * 0.2;
       renderer.render(scene, cam);
     };
-    if (!reduced) raf = requestAnimationFrame(loop);
+    this.resume = () => { if (!reduced && !raf) { last = performance.now(); raf = requestAnimationFrame(loop); } else if (reduced) renderer.render(scene, cam); };
+    this.resume();
     this.cleanup.push(() => cancelAnimationFrame(raf), () => removeEventListener('resize', size), () => removeEventListener('pointermove', mouse), () => renderer.dispose());
   }
 

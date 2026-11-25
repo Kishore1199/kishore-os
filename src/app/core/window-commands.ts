@@ -5,12 +5,13 @@ export type WinCmd =
   | { do: 'open' | 'close' | 'minimise' | 'maximise'; app: AppId | null }
   | { do: 'snap'; app: AppId | null; to: 'left' | 'right' }
   | { do: 'side'; app: AppId; other: AppId }
-  | { do: 'tile' | 'cascade' | 'close-all' | 'desktop' | 'pet-on' | 'pet-off' | 'spotlight' };
+  | { do: 'tile' | 'cascade' | 'close-all' | 'desktop' | 'pet-on' | 'pet-off' | 'spotlight' | 'paper-reset' };
 
 const NAMES: [RegExp, AppId][] = [
   [/^(about( me)?|profile|bio)$/, 'about'], [/^projects?$/, 'projects'], [/^(experience|career|jobs?)$/, 'experience'], [/^(skills?|tech stack)$/, 'skills'],
   [/^(study )?notes$|^interview notes$/, 'notes'], [/^(terminal|shell|console|command line)$/, 'terminal'], [/^(contact|contact form)$/, 'contact'],
   [/^(arcade|games?)$/, 'games'], [/^(system )?monitor$|^task manager$/, 'monitor'], [/^(resume|cv)( pdf)?$/, 'resume'], [/^guest ?book$/, 'guestbook'],
+  [/^(desktop )?(wallpapers?|background)( image| picture| photo)?( settings)?$/, 'wallpaper'],
   [/^ai ?lab$|^a i lab$/, 'ailab'], [/^(my )?(files|saved files|file manager)$/, 'files'],
 ];
 /** "the terminal" → terminal */
@@ -32,6 +33,9 @@ export function windowCommand(raw: string): { cmd: WinCmd; text: string } | null
   if (/^(open |show )?spotlight( search)?$/.test(q)) return { cmd: { do: 'spotlight' }, text: 'Opening Spotlight.' };
   if (/^(start |turn on )?(pet mode|robot pet)( on)?$|^(walk around|go for a walk|take a walk)$/.test(q)) return { cmd: { do: 'pet-on' }, text: 'Off I go. Say “stop walking” to bring me back.' };
   if (/^(stop|turn off) (pet mode|robot pet|walking)( around)?$|^pet mode off$|^(sit|come back)( down)?$/.test(q)) return { cmd: { do: 'pet-off' }, text: 'Back in my corner.' };
+
+  if (/^(change|set|choose|pick|upload|customi[sz]e|edit) (a |the |my |your )?(new )?(desktop )?(wallpaper|background)( image| picture| photo)?$/.test(q)) return { cmd: { do: 'open', app: 'wallpaper' }, text: 'Opening Wallpaper. Pick a picture or a ready-made background.' };
+  if (/^(reset|remove|clear) (the |my )?(desktop )?(wallpaper|background)( image| picture| photo)?$|^(go )?back to (the )?aurora$/.test(q)) return { cmd: { do: 'paper-reset' }, text: 'Back to the aurora.' };
 
   // "put projects next to skills", "projects and skills side by side"
   m = q.match(/^(?:put|place|show|open|move|compare) (.+?) (?:next to|beside|and|with) (.+?)(?: side by side)?$/) ?? q.match(/^(.+?) (?:and|next to|beside) (.+?) side by side$/);
@@ -58,7 +62,7 @@ export function windowCommand(raw: string): { cmd: WinCmd; text: string } | null
   if (m) {
     const a = appNamed(m[1]);
     // the sections have their own spoken introductions
-    if (a && ['terminal', 'games', 'monitor', 'resume', 'guestbook', 'files'].includes(a)) return { cmd: { do: 'open', app: a }, text: `Opening ${title(a)}.` };
+    if (a && ['terminal', 'games', 'monitor', 'resume', 'guestbook', 'files', 'wallpaper'].includes(a)) return { cmd: { do: 'open', app: a }, text: `Opening ${title(a)}.` };
   }
   return null;
 }

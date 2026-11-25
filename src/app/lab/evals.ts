@@ -124,12 +124,12 @@ const CASES: Case[] = [
   }],
   ['Window commands are understood', async () => {
     const want: [string, string][] = [['tile everything', 'tile'], ['tile windows', 'tile'], ['clean up my desktop', 'close-all'], ['close everything', 'close-all'], ['show the desktop', 'desktop'], ['put projects next to skills', 'side'], ['projects and skills side by side', 'side'],
-      ['move this to the left', 'snap'], ['put the terminal on the right', 'snap'], ['close this window', 'close'], ['Alpha, close the terminal', 'close'], ['maximise projects', 'maximise'], ['minimize this', 'minimise'], ['open the terminal', 'open'], ['open my files', 'open'], ['walk around', 'pet-on']];
+      ['move this to the left', 'snap'], ['put the terminal on the right', 'snap'], ['close this window', 'close'], ['Alpha, close the terminal', 'close'], ['maximise projects', 'maximise'], ['minimize this', 'minimise'], ['open the terminal', 'open'], ['open my files', 'open'], ['walk around', 'pet-on'], ['change the background', 'open'], ['upload my wallpaper picture', 'open'], ['open wallpaper', 'open'], ['reset the background', 'paper-reset']];
     const bad = want.filter(([q, d]) => windowCommand(q)?.cmd.do !== d || !quickReply(q)?.win).map(([q]) => q);
     return bad.length ? `Wrong for: ${bad.join(', ')}` : true;
   }],
   ['Questions are not mistaken for window commands', async () => {
-    const bad = ['close the chat', 'compare his projects', 'show me the EMR project', 'open source work', 'what is a window function', 'is he open to work', 'where did he use docker', 'compare Java and Kotlin', 'put it simply', 'run a SQL query', 'show his skills', 'start the tour', 'go to projects', 'stack', 'how do I close a connection in Java'].filter(q => windowCommand(q));
+    const bad = ['close the chat', 'compare his projects', 'show me the EMR project', 'open source work', 'what is a window function', 'is he open to work', 'where did he use docker', 'compare Java and Kotlin', 'put it simply', 'run a SQL query', 'show his skills', 'start the tour', 'go to projects', 'stack', 'how do I close a connection in Java', 'what is his background', 'background jobs in spring', 'show his educational background'].filter(q => windowCommand(q));
     return bad.length ? `Wrong for: ${bad.join(', ')}` : true;
   }],
   ['Refuses to arrange an invented window', async n => { const w = await play([{ call: [['arrangeWindows', { action: 'open', app: 'registry' }]] }, says], n); return !w.acts.length && w.result.steps[0].state === 'fail'; }],

@@ -3,6 +3,7 @@ import { DesktopIcons } from './desktop-icons';
 import { Icon } from '../core/icon';
 import { KaiService } from '../core/kai.service';
 import { OsService } from '../core/os.service';
+import { WallpaperService, pictureIn } from '../core/wallpaper.service';
 import { prefersReducedMotion } from '../core/theme.service';
 import { EXPERIENCE, PROFILE } from '../data/portfolio.data';
 
@@ -10,6 +11,7 @@ import { EXPERIENCE, PROFILE } from '../data/portfolio.data';
   selector: 'app-desktop',
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [DesktopIcons, Icon],
+  host: { '(dragover)': '$event.preventDefault()', '(drop)': 'dropped($event)' },
   template: `
     <app-desktop-icons />
 
@@ -37,6 +39,7 @@ import { EXPERIENCE, PROFILE } from '../data/portfolio.data';
         <b>Tips</b>
         <ul>
           <li><kbd>Ctrl</kbd> + <kbd>K</kbd> search everything</li>
+          <li>Drop a picture here to change the background</li>
           <li>Drag windows, <b>icons</b> and ALPHA 🤖 anywhere</li>
           <li>🔊 <em>Explain</em> on any window — ALPHA reads it aloud</li>
           <li>Turn on 🎤 and say <b>“Alpha”</b></li>
@@ -82,6 +85,16 @@ export class Desktop {
   protected readonly kai = inject(KaiService);
   protected readonly p = PROFILE;
   protected readonly now = EXPERIENCE[0];
+
+  private paper = inject(WallpaperService);
+
+  /** a picture dropped on the desktop becomes the background */
+  protected async dropped(e: DragEvent) {
+    e.preventDefault(); // or the browser would open the file
+    const f = pictureIn(e.dataTransfer);
+    if (!f) return;
+    if (!(await this.paper.usePhoto(f)) && this.paper.error()) this.os.notify(this.paper.error());
+  }
 
   // ── the buttons on the card, one at a time ──
   protected readonly cards = [
