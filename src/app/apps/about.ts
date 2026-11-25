@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { Icon } from '../core/icon';
 import { Logo } from '../core/logo';
+import { AssistantBus } from '../core/assistant.bus';
 import { KaiService } from '../core/kai.service';
 import { OsService } from '../core/os.service';
 import { ABOUT_HIGHLIGHTS, EXPERIENCE, PROFILE, PROJECTS, SKILL_CATEGORIES } from '../data/portfolio.data';
@@ -21,6 +22,8 @@ import { STUDY_GUIDES } from '../data/study.data';
           <div class="cta">
             <button type="button" class="btn hot" (click)="kai.tour()"><app-icon name="volume" [size]="15" /> Hear the tour</button>
             <button type="button" class="btn" (click)="os.open('projects')"><app-icon name="folder" [size]="15" /> Projects</button>
+            <button type="button" class="btn" (click)="bus.openMatcher()"><app-icon name="briefcase" [size]="15" /> Match a job</button>
+            <button type="button" class="btn" (click)="kai.chatOpen.set(true); kai.startLive()"><app-icon name="mic" [size]="15" /> Live talk</button>
             <button type="button" class="btn" (click)="os.copy(p.email, 'Email')"><app-icon name="copy" [size]="15" /> Copy email</button>
           </div>
         </div>
@@ -79,6 +82,7 @@ import { STUDY_GUIDES } from '../data/study.data';
 export class About {
   protected readonly os = inject(OsService);
   protected readonly kai = inject(KaiService);
+  protected readonly bus = inject(AssistantBus);
   protected readonly p = PROFILE;
   protected readonly now = EXPERIENCE[0];
   protected readonly years = 3;

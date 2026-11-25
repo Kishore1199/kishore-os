@@ -4,6 +4,11 @@ import { Logo } from '../core/logo';
 import { KaiService } from '../core/kai.service';
 import { OsService, appDef } from '../core/os.service';
 import { ThemeService } from '../core/theme.service';
+import { IconLayout } from '../core/icon-layout.service';
+import { NotificationService } from '../core/notification.service';
+import { PetService } from '../core/pet.service';
+import { WallpaperMood } from '../core/wallpaper-mood.service';
+import { LANGS } from '../core/language.service';
 import { PROFILE } from '../data/portfolio.data';
 
 @Component({
@@ -23,13 +28,22 @@ import { PROFILE } from '../data/portfolio.data';
           <button type="button" role="menuitem" (click)="os.spotlight.set(true)"><app-icon name="search" [size]="14" /> Spotlight search <kbd>Ctrl K</kbd></button>
           <button type="button" role="menuitem" (click)="os.open('guestbook')"><app-icon name="message" [size]="14" /> Guestbook</button>
           <button type="button" role="menuitem" (click)="os.open('monitor')"><app-icon name="activity" [size]="14" /> System monitor</button>
+          <button type="button" role="menuitem" (click)="os.open('ailab')"><app-icon name="spark" [size]="14" /> AI Lab</button>
+          <button type="button" role="menuitem" (click)="os.open('files')"><app-icon name="folder" [size]="14" /> Files</button>
           <a role="menuitem" [href]="p.resume" download><app-icon name="download" [size]="14" /> Download resume</a>
           <hr />
+          <button type="button" role="menuitem" (click)="os.tile() || os.notify('Open some windows first')"><app-icon name="grid" [size]="14" /> Tile windows</button>
+          <button type="button" role="menuitem" (click)="os.cascade() || os.notify('Open some windows first')"><app-icon name="layers" [size]="14" /> Stack windows</button>
+          <button type="button" role="menuitem" (click)="icons.reset(); os.notify('Icons are back in their places')"><app-icon name="refresh" [size]="14" /> Put icons back</button>
+          <button type="button" role="menuitemcheckbox" [attr.aria-checked]="pet.on()" (click)="pet.set(!pet.on())"><app-icon name="bot" [size]="14" /> Let ALPHA walk <kbd>{{ pet.on() ? 'on' : 'off' }}</kbd></button>
+          <button type="button" role="menuitemcheckbox" [attr.aria-checked]="mood.on()" (click)="mood.toggle()"><app-icon name="sun" [size]="14" /> Wallpaper mood <kbd>{{ mood.on() ? 'on' : 'off' }}</kbd></button>
           <button type="button" role="menuitem" (click)="os.closeAll()"><app-icon name="close" [size]="14" /> Close all windows</button>
           <button type="button" role="menuitem" (click)="reboot()"><app-icon name="refresh" [size]="14" /> Restart</button>
         </div>
       }
       <div class="right">
+        <button type="button" class="ai mono" [attr.data-s]="ai().key" (click)="os.open('monitor')" [title]="ai().title"><i></i>{{ ai().label }}</button>
+        <select class="lang" aria-label="ALPHA's answer language" (change)="kai.lang.set($any($event.target).value)">@for (l of langs; track l.id) { <option [value]="l.id" [selected]="kai.lang.lang() === l.id">{{ l.label }}</option> }</select>
         <span class="status mono"><i></i> Open to work</span>
         <button type="button" class="ic" (click)="os.spotlight.set(true)" aria-label="Search (Ctrl K)"><app-icon name="search" [size]="15" /></button>
         @if (kai.voice.canListen) {
@@ -38,6 +52,7 @@ import { PROFILE } from '../data/portfolio.data';
         <button type="button" class="ic" (click)="kai.voice.toggle()" [attr.aria-label]="kai.voice.enabled() ? 'Mute ALPHA' : 'Unmute ALPHA'" [attr.aria-pressed]="kai.voice.enabled()">
           <app-icon [name]="kai.voice.enabled() ? 'volume' : 'volume-x'" [size]="15" />
         </button>
+        <button type="button" class="ic bell" (click)="notes.toggle()" [attr.aria-expanded]="notes.open()" [attr.aria-label]="notes.unread() ? 'Notifications, ' + notes.unread() + ' new' : 'Notifications'"><app-icon name="bell" [size]="15" />@if (notes.unread()) { <b>{{ notes.unread() }}</b> }</button>
         <button type="button" class="ic" (click)="theme.toggle()" aria-label="Toggle theme"><app-icon [name]="theme.isDark() ? 'sun' : 'moon'" [size]="15" /></button>
         <span class="clock mono" [attr.title]="'Chennai time (IST)'">{{ clock() }}</span>
       </div>
@@ -62,8 +77,14 @@ import { PROFILE } from '../data/portfolio.data';
     .ic { width: 30px; height: 30px; display: grid; place-items: center; border-radius: 8px; border: 0; background: none; cursor: pointer; }
     .ic:hover { background: var(--glass-2); }
     .ic.wake { color: var(--teal); background: color-mix(in srgb, var(--teal) 16%, transparent); box-shadow: inset 0 0 0 1px var(--teal); }
+    .bell { position: relative; } .bell b { position: absolute; top: 1px; right: 0; min-width: 14px; height: 14px; padding: 0 3px; border-radius: 8px; background: #b91c1c; color: #fff; font: 700 0.6rem/14px var(--mono); text-align: center; }
+    .ai { display: inline-flex; align-items: center; gap: 6px; padding: 3px 10px; border-radius: 999px; border: 1px solid var(--line-2); background: none; color: var(--ink-2); font-size: 0.7rem; cursor: pointer; } .ai:hover { color: var(--ink); border-color: var(--accent); }
+    .ai i { width: 7px; height: 7px; border-radius: 50%; background: #94a3b8; } .ai[data-s='on'] i { background: #34d399; } .ai[data-s='device'] i { background: #60a5fa; }
+    .lang { height: 26px; padding: 0 6px; border-radius: 999px; border: 1px solid var(--line-2); background: var(--solid); color: var(--ink-2); font-size: 0.72rem; }
     .clock { padding: 0 8px; font-size: 0.78rem; white-space: nowrap; }
-    @media (max-width: 760px) { .app, .status, .logo b { display: none; } }
+    @media (max-width: 1000px) { .status { display: none; } }
+    @media (max-width: 760px) { .app, .logo b, .lang { display: none; } .ai { font-size: 0; gap: 0; padding: 7px; border: 0; } }
+    @media (max-width: 420px) { .clock { padding: 0 2px; font-size: 0.68rem; } }
   `,
 })
 export class Menubar implements OnInit, OnDestroy {
@@ -71,6 +92,13 @@ export class Menubar implements OnInit, OnDestroy {
   protected readonly kai = inject(KaiService);
   protected readonly theme = inject(ThemeService);
   protected readonly p = PROFILE;
+  protected readonly notes = inject(NotificationService);
+  protected readonly icons = inject(IconLayout);
+  protected readonly pet = inject(PetService);
+  protected readonly mood = inject(WallpaperMood);
+  protected readonly langs = LANGS;
+  protected readonly ai = computed(() => this.kai.cloud.aiOnline() ? { key: 'on', label: 'Gemini', title: 'Gemini answers. Open the System Monitor for details.' }
+    : this.kai.device.state() === 'ready' ? { key: 'device', label: 'On device', title: "Chrome's own AI answers." } : { key: 'off', label: 'Offline brain', title: 'Gemini is not available, so ALPHA uses its built-in answers.' });
   protected readonly menu = signal(false);
   protected readonly clock = signal('');
   protected readonly title = computed(() => { const f = this.os.focused(); return f ? appDef(f).title : 'Desktop'; });

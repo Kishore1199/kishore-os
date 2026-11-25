@@ -2,7 +2,9 @@ import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, inject, signal }
 import { Icon } from '../core/icon';
 import { Logo } from '../core/logo';
 import { KaiService } from '../core/kai.service';
-import { AppId, APPS, OsService } from '../core/os.service';
+import { OsService, winId } from '../core/os.service';
+import { AI_FEATURES } from '../data/ai-features.data';
+import { SessionService } from '../core/session.service';
 
 const LINES = [
   'Kishore.OS BIOS 3.0 · Java Full Stack Edition',
@@ -11,7 +13,8 @@ const LINES = [
   'Mounting /projects ...... 6 found',
   'Mounting /skills ........ 58 found',
   'Indexing /study-notes ... 84 chapters',
-  'Starting ALPHA voice assistant ...... ready',
+  'Starting ALPHA agent ...... ready',
+  `Loading AI Lab .......... ${AI_FEATURES.length} options`,
   'Welcome.',
 ];
 
@@ -55,6 +58,7 @@ const LINES = [
 export class Boot implements OnInit, OnDestroy {
   private os = inject(OsService);
   private kai = inject(KaiService);
+  private session = inject(SessionService);
   protected readonly lines = LINES;
   protected readonly shown = signal<string[]>([]);
   protected readonly ready = signal(false);
@@ -82,8 +86,12 @@ export class Boot implements OnInit, OnDestroy {
     this.gone.set(true);
     this.os.booted.set(true);
     try { sessionStorage.setItem('kv-booted', '1'); } catch { /* ignore */ }
-    const deep = location.hash.slice(1) as AppId;
-    if (APPS.some(a => a.id === deep)) this.os.open(deep);
+    const hash = location.hash, deep = winId(hash.slice(1));
+    const last = quiet ? this.session.last() : []; // a reload in the same tab: carry on where you were
+    if (last.length) { this.os.restore(last); this.session.restored = true; }
+    if (deep) this.os.open(deep);
+    else if (hash.startsWith('#lab/')) history.replaceState(null, '', hash); // LabRouter opens the tool
+    else if (last.length) { /* the windows are back */ }
     else if (tour) this.kai.tour();
     else { this.os.open('about'); if (!quiet) this.kai.say("Welcome! I'm Alpha, I'm here to assist you. Tap my orb any time if you want me to explain something."); }
   }

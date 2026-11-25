@@ -1,3 +1,4 @@
+import { speechLang } from './language.service';
 import { Injectable, signal } from '@angular/core';
 
 type Rec = { lang: string; interimResults: boolean; maxAlternatives: number; start(): void; stop(): void; abort(): void;
@@ -19,6 +20,8 @@ export class VoiceService {
   readonly canSpeak = typeof speechSynthesis !== 'undefined';
   readonly canListen = typeof window !== 'undefined' && !!((window as any).SpeechRecognition || (window as any).webkitSpeechRecognition);
   readonly enabled = signal(this.load());
+  /** language of the question being spoken */
+  readonly listenLang = signal('en-IN');
   readonly speaking = signal(false);
   readonly listening = signal(false);
   readonly caption = signal('');
@@ -77,6 +80,7 @@ export class VoiceService {
     this.speaking.set(true);
     this.animate();
     return new Promise<void>(resolve => {
+      this.settle = resolve;
       const done = () => {
         if (my !== this.token) return resolve();
         clearInterval(this.fallbackT);
@@ -87,8 +91,11 @@ export class VoiceService {
       };
       if (this.enabled() && this.canSpeak) {
         const u = new SpeechSynthesisUtterance(text.replace(/·/g, ',').replace(/–/g, ' to '));
-        if (this.voice) u.voice = this.voice;
-        u.lang = this.voice?.lang ?? 'en-IN';
+        // Tamil and Hindi text needs a voice of that language
+        const other = speechLang(text);
+        const v = other ? speechSynthesis.getVoices().find(x => x.lang.replace('_', '-').startsWith(other.slice(0, 2))) ?? null : this.voice;
+        if (v) u.voice = v;
+        u.lang = other ?? this.voice?.lang ?? 'en-IN';
         u.rate = 1.03;
         u.pitch = 1;
         let gotBoundary = false;
@@ -124,8 +131,13 @@ export class VoiceService {
     }, 370);
   }
 
+  /** resolves whoever is waiting for the current line, also when it is cut off */
+  private settle?: () => void;
+
   stop() {
     this.token++;
+    this.settle?.();
+    this.settle = undefined;
     clearInterval(this.fallbackT);
     if (this.canSpeak) speechSynthesis.cancel();
     this.speaking.set(false);
@@ -141,7 +153,7 @@ export class VoiceService {
     this.rec?.abort();
     const rec: Rec = new R();
     this.rec = rec;
-    rec.lang = 'en-IN';
+    rec.lang = this.listenLang();
     rec.interimResults = true;
     rec.maxAlternatives = 1;
     this.interim.set('');

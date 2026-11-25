@@ -2,7 +2,8 @@ import { ChangeDetectionStrategy, Component, computed, inject, input } from '@an
 import { Icon } from '../core/icon';
 import { KaiService } from '../core/kai.service';
 import { NARRATION } from '../core/kai.brain';
-import { OsService, Win, appDef } from '../core/os.service';
+import { AI_FEATURES } from '../data/ai-features.data';
+import { AppId, OsService, Win, appDef } from '../core/os.service';
 
 /** A desktop window: drag by the title bar, resize from the corner, double-click to maximise. */
 @Component({
@@ -18,8 +19,9 @@ import { OsService, Win, appDef } from '../core/os.service';
     '[style.width]': "win().max ? '100vw' : win().w + 'px'",
     '[style.height]': "win().max ? 'calc(100dvh - 40px)' : win().h + 'px'",
     '[style.z-index]': 'win().z',
-    '[style.view-transition-name]': "'win-' + win().id",
+    '[style.view-transition-name]': "'win-' + win().id.replace(':', '-')",
     '(pointerdown)': 'os.focus(win().id)',
+    '(focusin)': 'os.focus(win().id)',
     role: 'dialog',
     '[attr.aria-label]': 'def().title',
   },
@@ -70,7 +72,7 @@ export class WindowFrame {
   protected narrate() {
     const id = this.win().id;
     if (this.kai.voice.speaking()) { this.kai.voice.stop(); return; }
-    this.kai.explain(id, this.os.narrators.get(id)?.() ?? NARRATION[id]);
+    this.kai.explain(id, this.os.narrators.get(id)?.() ?? NARRATION[id as AppId] ?? `${this.def().title}. ${AI_FEATURES.find(f => f.title === this.def().title)?.text ?? ''}`);
   }
 
   protected drag(e: PointerEvent) {

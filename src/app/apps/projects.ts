@@ -1,4 +1,5 @@
-import { ChangeDetectionStrategy, Component, DestroyRef, computed, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, computed, effect, inject, signal, untracked } from '@angular/core';
+import { AssistantBus } from '../core/assistant.bus';
 import { Icon } from '../core/icon';
 import { KaiService } from '../core/kai.service';
 import { projectStory } from '../core/kai.brain';
@@ -15,9 +16,9 @@ import { PROJECTS } from '../data/portfolio.data';
   template: `
     <div class="split">
       <aside>
-        <p class="kicker side">All projects · {{ list.length }}</p>
+        <p class="kicker side">All projects · {{ list.length }} <button type="button" class="auto" (click)="playing.set(!playing())" [attr.aria-pressed]="playing()" [attr.aria-label]="playing() ? 'Pause the slideshow' : 'Play the slideshow'"><app-icon [name]="playing() ? 'pause' : 'play'" [size]="12" /></button></p>
         @for (p of list; track p.title) {
-          <button type="button" [class.on]="cur().title === p.title" [style.--c]="p.accent" (click)="pick.set(p.title)">
+          <button type="button" [class.on]="cur().title === p.title" [style.--c]="p.accent" (click)="choose(p.title)">
             <span class="sw"></span>
             <span class="t"><b>{{ p.title }}</b><small>{{ p.badge }} · {{ p.org }}</small></span>
           </button>
@@ -54,7 +55,8 @@ import { PROJECTS } from '../data/portfolio.data';
   styles: `
     .split { display: grid; grid-template-columns: 250px minmax(0, 1fr); height: 100%; }
     aside { padding: 14px 10px; border-right: 1px solid var(--line); background: color-mix(in srgb, var(--solid) 30%, transparent); overflow-y: auto; display: grid; align-content: start; gap: 4px; }
-    .side { padding: 4px 8px 8px; font-size: 0.64rem; }
+    .side { display: flex; align-items: center; justify-content: space-between; padding: 4px 8px 8px; font-size: 0.64rem; }
+    aside .auto { padding: 5px 7px; border-radius: 8px; border: 1px solid var(--line-2); color: var(--ink-2); }
     aside button { display: flex; align-items: center; gap: 10px; padding: 9px 10px; border-radius: 12px; border: 0; background: none; cursor: pointer; text-align: left; }
     aside button:hover { background: var(--glass-2); }
     aside button.on { background: linear-gradient(135deg, color-mix(in srgb, var(--c) 30%, transparent), transparent); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--c) 50%, transparent); }
@@ -97,11 +99,40 @@ export class Projects {
   protected readonly pick = signal(PROJECTS[0].title);
   protected readonly cur = computed(() => PROJECTS.find(p => p.title === this.pick())!);
 
+  protected readonly playing = signal(false);
+
   constructor() {
-    // the window's "Explain" button narrates whichever project is selected
+    const bus = inject(AssistantBus);
     const os = inject(OsService);
+    // ALPHA shows a project, or pages through them
+    let seen = bus.project()?.n ?? 0, slid = bus.slides()?.n ?? 0;
+    const first = bus.project();
+    if (first && Date.now() - bus.askedAt < 3000) this.pick.set(first.title);
+    effect(() => { const p = bus.project(); if (p && p.n !== seen) { seen = p.n; untracked(() => this.choose(p.title)); } });
+    effect(() => {
+      const s = bus.slides();
+      if (!s || s.n === slid) return;
+      slid = s.n;
+      untracked(() => { if (s.cmd === 'next' || s.cmd === 'prev') { this.playing.set(false); this.step(s.cmd === 'next' ? 1 : -1); } else this.playing.set(s.cmd === 'play'); });
+    });
+    effect(() => bus.front.set(this.pick()));
+    // slideshow: a new project every three seconds, while the window is in front and nobody is reading aloud
+    effect(clean => {
+      if (!this.playing()) return;
+      const t = setInterval(() => { if (!document.hidden && os.focused() === 'projects' && !this.kai.voice.speaking()) this.step(1); }, 3000);
+      clean(() => clearInterval(t));
+    });
+    // the window's "Explain" button narrates whichever project is selected
     os.narrators.set('projects', () => projectStory(this.pick()));
     inject(DestroyRef).onDestroy(() => os.narrators.delete('projects'));
+  }
+  protected choose(title: string) {
+    this.playing.set(false);
+    if (PROJECTS.some(p => p.title === title)) this.pick.set(title);
+  }
+  private step(d: 1 | -1) {
+    const i = PROJECTS.findIndex(p => p.title === this.pick());
+    this.pick.set(PROJECTS[(i + d + PROJECTS.length) % PROJECTS.length].title);
   }
   protected listen() {
     this.kai.explain('projects', projectStory(this.pick()));
