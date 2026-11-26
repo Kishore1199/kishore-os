@@ -1,4 +1,5 @@
 import { Injectable, signal } from '@angular/core';
+import type { PlayGame } from './playground';
 
 export const GAMES = [
   { id: 'bugs', title: 'Bug squash', text: 'Tap the bugs before they run.', icon: 'bug', color: '#e11d48' },
@@ -14,10 +15,10 @@ export const GAMES = [
 export type Game = (typeof GAMES)[number]['id'];
 export const gameId = (v: string): Game | undefined => GAMES.find(g => g.id === v)?.id;
 
-/** Which game the Arcade shows; null is the list of games. */
+/** Which game the AI Playground shows (an AI game or a quick game); null is the list of games. */
 @Injectable({ providedIn: 'root' })
 export class ArcadeState {
-  readonly game = signal<Game | null>(null);
+  readonly game = signal<Game | PlayGame | null>(null);
 }
 
 export const best = (k: string) => { try { return Number(localStorage.getItem(k)) || 0; } catch { return 0; } };

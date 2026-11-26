@@ -392,7 +392,7 @@ Not testable in automation: real microphone input (wake word / voice questions) 
 ## 16. Roadmap
 
 - Case-study pages for 75Health EHR/EMR (problem → role → architecture → results), narrated by ALPHA.
-- ALPHA in Tamil and Hindi (`ta-IN`, `hi-IN` voices + prompts).
+- ALPHA in Tamil, Hindi, Telugu and Malayalam (`ta-IN`, `hi-IN`, `te-IN`, `ml-IN` voices + prompts).
 - Live GitHub widget (repos, contribution graph).
 - PWA: installable app + offline study notes.
 - "Hire me" vCard + QR code.

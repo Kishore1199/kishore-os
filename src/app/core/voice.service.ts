@@ -91,7 +91,7 @@ export class VoiceService {
       };
       if (this.enabled() && this.canSpeak) {
         const u = new SpeechSynthesisUtterance(text.replace(/·/g, ',').replace(/–/g, ' to '));
-        // Tamil and Hindi text needs a voice of that language
+        // Tamil, Hindi, Telugu and Malayalam text needs a voice of that language
         const other = speechLang(text);
         const v = other ? speechSynthesis.getVoices().find(x => x.lang.replace('_', '-').startsWith(other.slice(0, 2))) ?? null : this.voice;
         if (v) u.voice = v;

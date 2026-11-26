@@ -2,6 +2,7 @@ import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, OnDestro
 import { DatePipe } from '@angular/common';
 import { AssistantBus } from '../core/assistant.bus';
 import { Icon } from '../core/icon';
+import { Dropdown } from '../core/dropdown';
 import { OsService } from '../core/os.service';
 import { VisitorMemory } from '../core/visitor-memory.service';
 import { VoiceService } from '../core/voice.service';
@@ -25,7 +26,7 @@ import { Timeline } from './timeline';
   selector: 'app-lab',
   providers: [LabService],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [CodeRunView, DailyView, DatePipe, DetectiveView, RaceView, RpsView, StudioView, GuestbookView, Icon, MdView, MeetingView, OfflineView, QuizView, SemanticView, SkillGraph, SqlRunView, Timeline, TraceView],
+  imports: [Dropdown, CodeRunView, DailyView, DatePipe, DetectiveView, RaceView, RpsView, StudioView, GuestbookView, Icon, MdView, MeetingView, OfflineView, QuizView, SemanticView, SkillGraph, SqlRunView, Timeline, TraceView],
   template: `
     <dialog #dialog aria-labelledby="lab-title" [attr.data-tool]="tool().id" (close)="onClose()">
       <div class="box">
@@ -68,7 +69,7 @@ import { Timeline } from './timeline';
                   <div class="field">
                     <label [for]="'lab-' + f.key">{{ f.label }}@if (f.optional) { <small> optional</small> }</label>
                     @switch (f.type) {
-                      @case ('select') { <select [id]="'lab-' + f.key" [disabled]="!!lab.busy()" (change)="set(f.key, $any($event.target).value)">@for (o of f.options; track o) { <option [value]="o" [selected]="values()[f.key] === o">{{ o }}</option> }</select> }
+                      @case ('select') { <app-dropdown [inputId]="'lab-' + f.key" [disabled]="!!lab.busy()" [options]="opts(f.options)" [value]="values()[f.key] ?? ''" (valueChange)="set(f.key, $event)" /> }
                       @case ('area') { <textarea [id]="'lab-' + f.key" rows="5" [attr.maxlength]="f.max" [placeholder]="f.placeholder ?? ''" [disabled]="!!lab.busy()" [value]="values()[f.key] ?? ''" (input)="set(f.key, $any($event.target).value)"></textarea> }
                       @case ('file') { <input [id]="'lab-' + f.key" type="file" accept=".pdf,.txt,.md,application/pdf,text/plain" [disabled]="!!lab.busy()" (change)="read($any($event.target).files?.[0])" /> }
                       @default { <input [id]="'lab-' + f.key" type="text" autocomplete="off" [attr.maxlength]="f.max" [placeholder]="f.placeholder ?? ''" [disabled]="!!lab.busy()" [value]="values()[f.key] ?? ''" (input)="set(f.key, $any($event.target).value)" (keydown.enter)="start()" /> }
@@ -166,7 +167,7 @@ export class LabDialog implements OnInit, AfterViewInit, OnDestroy {
   ngAfterViewInit() {
     this.dialog().nativeElement.open = true; // show() would take the focus
     // windows that come back after a reload don't fight over the focus
-    if (this.os.focused() === `tool:${this.id()}`) this.dialog().nativeElement.querySelector<HTMLElement>('textarea, input, select')?.focus({ preventScroll: true });
+    if (this.os.focused() === `tool:${this.id()}`) this.dialog().nativeElement.querySelector<HTMLElement>('textarea, input, [role=combobox]')?.focus({ preventScroll: true });
   }
 
   ngOnDestroy() {
@@ -182,6 +183,14 @@ export class LabDialog implements OnInit, AfterViewInit, OnDestroy {
     const v: Values = {};
     for (const f of this.tool().fields) v[f.key] = seed[f.key] ?? (f.type === 'select' ? f.options![0] : '');
     this.values.set(v);
+  }
+
+  private optCache = new Map<readonly string[], { value: string; label: string }[]>();
+  protected opts(list: readonly string[] | undefined) {
+    if (!list) return [];
+    let v = this.optCache.get(list);
+    if (!v) this.optCache.set(list, (v = list.map(o => ({ value: o, label: o }))));
+    return v;
   }
 
   protected set(key: string, value: string) {

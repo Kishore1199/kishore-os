@@ -12,7 +12,7 @@ const LINES = [
   'Loading kernel: spring-boot-3 (java 21) ...... OK',
   'Mounting /projects ...... 6 found',
   'Mounting /skills ........ 58 found',
-  'Indexing /study-notes ... 84 chapters',
+  'Indexing /study-notes ... 87 chapters',
   'Starting ALPHA agent ...... ready',
   `Loading AI Lab .......... ${AI_FEATURES.length} options`,
   'Welcome.',

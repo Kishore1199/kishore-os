@@ -2,17 +2,19 @@ import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@a
 import { CHAPTERS, chapter } from '../core/notes.service';
 import { LabService } from './lab.service';
 import { QuizItem } from './quiz';
+import { DropOption, Dropdown } from '../core/dropdown';
 
 @Component({
   selector: 'app-quiz',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [Dropdown],
   template: `
     @if (!items().length) {
       <label for="qz">Chapter</label>
-      <select id="qz" #sel>@for (g of groups; track g.name) { <optgroup [label]="g.name">@for (c of g.chapters; track c.key) { <option [value]="c.key">{{ c.title }}</option> }</optgroup> }</select>
+      <app-dropdown inputId="qz" [options]="chapterOptions" [(value)]="picked" />
       <div class="row">
-        <button type="button" class="btn btn-primary" [disabled]="busy()" (click)="load(sel.value, false)">Quiz from the notes</button>
-        <button type="button" class="btn btn-ghost" [disabled]="busy()" (click)="load(sel.value, true)">Written by AI</button>
+        <button type="button" class="btn btn-primary" [disabled]="busy()" (click)="load(picked(), false)">Quiz from the notes</button>
+        <button type="button" class="btn btn-ghost" [disabled]="busy()" (click)="load(picked(), true)">Written by AI</button>
       </div>
       @if (busy()) { <p role="status">Preparing questions…</p> }
       @if (error()) { <p class="err" role="alert">{{ error() }}</p> }
@@ -32,7 +34,6 @@ import { QuizItem } from './quiz';
   `,
   styles: `
     :host { display: grid; gap: 14px; } label, p { font-size: 0.86rem; color: var(--text-2); } .err { color: var(--bad, #ef4444); }
-    select { width: 100%; padding: 12px 14px; font: inherit; font-size: 0.88rem; color: var(--text); background: var(--surface-2); border: 1px solid var(--border-strong); border-radius: 14px; } option, optgroup { background: var(--surface-solid); color: var(--text); }
     .row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; } .row .btn { padding: 9px 16px; font-size: 0.84rem; } a { color: var(--accent); font-size: 0.84rem; }
     fieldset { margin: 0; padding: 14px; border: 1px solid var(--border); border-radius: 16px; display: grid; gap: 8px; min-width: 0; } legend { float: left; width: 100%; font-weight: 600; font-size: 0.92rem; color: var(--text); margin-bottom: 4px; }
     .opt { text-align: left; padding: 10px 13px; border-radius: 12px; border: 1px solid var(--border-strong); background: none; color: var(--text-2); font: inherit; font-size: 0.85rem; cursor: pointer; overflow-wrap: anywhere; } .opt:hover:enabled { border-color: var(--accent); }
@@ -42,6 +43,8 @@ import { QuizItem } from './quiz';
 export class QuizView {
   private lab = inject(LabService);
   protected readonly groups = [...new Set(CHAPTERS.map(c => `${c.guide} · ${c.group}`))].map(name => ({ name, chapters: CHAPTERS.filter(c => `${c.guide} · ${c.group}` === name && c.questions >= 8) })).filter(g => g.chapters.length);
+  protected readonly chapterOptions: DropOption[] = this.groups.flatMap(g => g.chapters.map(c => ({ value: c.key, label: c.title, group: g.name })));
+  protected readonly picked = signal(this.chapterOptions[0]?.value ?? '');
   protected readonly items = signal<QuizItem[]>([]);
   protected readonly picks = signal<Record<number, number>>({});
   protected readonly busy = signal(false);

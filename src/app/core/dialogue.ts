@@ -56,7 +56,7 @@ export class Dialogue {
     if (/^(repeat( that)?|say (that|it) again|again|come again|what did you say|pardon|sorry what)$/.test(q) && this.last) return { reply: { text: this.last, chat: true } };
 
     if (/^(i am |i'm |we are |we're )?(hiring|a recruiter|recruiting|looking for a developer)$/.test(q)) return { reply: { text: 'Great! I can check your job description against Kishore’s real projects, gaps included. Shall I open the job matcher?', chat: true } };
-    if (/^(i am |i'm )?(learning|a student|studying|preparing( for an? interviews?)?)$/.test(q)) return { reply: { text: 'Nice! I have over 2,700 interview questions here. Shall I start a mock interview?', chat: true } };
+    if (/^(i am |i'm )?(learning|a student|studying|preparing( for an? interviews?)?)$/.test(q)) return { reply: { text: 'Nice! I have over 3,200 interview questions here. Shall I start a mock interview?', chat: true } };
     if (/^(i am |i'm )?(just )?(exploring|looking( around)?|browsing|curious|visiting)$/.test(q)) return { reply: { text: 'Welcome aboard! Shall I give you a guided tour?', chat: true } };
 
     if (/^(i am |i'm )(a |an )?(\w+ )?(developer|engineer|programmer|coder|tester)$/.test(q)) return { reply: { text: 'Nice to meet a fellow builder! I can show you how this site works, or quiz you on Java. Shall I start a mock interview?', chat: true } };

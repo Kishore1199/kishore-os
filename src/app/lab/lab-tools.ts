@@ -134,7 +134,7 @@ export function labTools(notes: NotesService, github: GithubService): LabTool[] 
     { id: 'accessibility', title: 'Accessibility audit', intro: 'Checks this desktop with axe-core, in your browser. No AI needed.', cta: 'Run the audit', fields: [], local: () => ({ text: '' }) },
     { id: 'evals', title: 'Agent test suite', intro: 'Tests ALPHA. The scripted tests use written replies in place of Gemini, so they check the agent loop, tools and safety rules. The live test asks the real model.', cta: 'Run the tests', fields: [{ key: 'mode', label: 'Tests', type: 'select', options: ['Scripted (no AI requests)', 'Live (up to 15 AI requests)'] }], local: () => ({ text: '' }) },
     { id: 'trace', title: 'Agent trace viewer', intro: 'Every step the AI took: requests, tools, time and tokens.', view: 'trace', fields: [], local: () => ({ text: '' }) },
-    { id: 'semantic', title: 'Search by meaning', intro: 'Search 2,700+ study notes in your own words.', view: 'semantic', fields: [], local: () => ({ text: '' }) },
+    { id: 'semantic', title: 'Search by meaning', intro: 'Search 3,200+ study notes in your own words.', view: 'semantic', fields: [], local: () => ({ text: '' }) },
     { id: 'sql-run', title: 'SQL playground', intro: 'Run SQL on sample tables, in your browser.', view: 'sql-run', fields: [], local: () => ({ text: '' }) },
     { id: 'run-code', title: 'JavaScript runner', intro: 'Try JavaScript safely.', view: 'run-code', fields: [], local: () => ({ text: '' }) },
     { id: 'meeting', title: 'Meeting agent', intro: 'Say when you want to meet. You get a calendar file and a draft message. You confirm both.', view: 'meeting', fields: [], local: () => ({ text: '' }) },

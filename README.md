@@ -8,9 +8,9 @@ I'm **Kishore V**, a Java Full Stack Developer (Java 21 · Spring Boot · Hibern
 
 ## What's inside
 
-- **Desktop OS** — draggable, resizable windows (View Transitions API), a magnifying dock, menu bar with live IST clock, `Ctrl/⌘ + K` Spotlight search across apps, projects, skills and 84 study chapters.
+- **Desktop OS** — draggable, resizable windows (View Transitions API), a magnifying dock, menu bar with live IST clock, `Ctrl/⌘ + K` Spotlight search across apps, projects, skills and 87 study chapters.
 - **ALPHA, the voice guide** — a mini robot that talks (Web Speech API), answers questions with **Gemini via Firebase AI Logic** (falls back to an offline brain), takes voice questions, runs a narrated tour, explains every window, and has 18 reactions — poke its face, tummy, head, hands or ears; it even falls asleep if you leave it alone.
-- **Apps** — About, Projects, Experience, Skills, Study Notes (Java full-stack + DSA interview prep), Terminal (20+ commands — try `alpha`), Contact (EmailJS), Arcade (two mini-games), System Monitor, Guestbook (live Firestore sticky-note wall), Resume viewer.
+- **Apps** — About, Projects, Experience, Skills, Study Notes (Java full-stack + DSA interview prep), Terminal (20+ commands — try `alpha`), Contact (EmailJS), AI Playground (AI games plus nine quick games), Business Card (flip it for a QR code that saves the contact), System Monitor, Guestbook (live Firestore sticky-note wall), Resume viewer.
 - **Aurora wallpaper** — a three.js GLSL shader that ripples while ALPHA speaks.
 - Works on phones as a home screen; respects reduced-motion; day & night themes.
 

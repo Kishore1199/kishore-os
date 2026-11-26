@@ -2,7 +2,7 @@ import { Injectable, computed, signal } from '@angular/core';
 import { AI_FEATURES } from '../data/ai-features.data';
 import { LabId, labId } from '../lab/lab-ids';
 
-export type AppId = 'about' | 'projects' | 'experience' | 'skills' | 'notes' | 'terminal' | 'contact' | 'games' | 'monitor' | 'resume' | 'guestbook' | 'ailab' | 'files' | 'wallpaper';
+export type AppId = 'about' | 'projects' | 'experience' | 'skills' | 'notes' | 'terminal' | 'contact' | 'monitor' | 'resume' | 'guestbook' | 'ailab' | 'files' | 'wallpaper' | 'play' | 'card';
 /** an AI Lab tool in its own window */
 export type ToolId = `tool:${LabId}`;
 export type WinId = AppId | ToolId;
@@ -21,7 +21,8 @@ export const APPS: (AppDef & { id: AppId })[] = [
   { id: 'files', title: 'Files', icon: 'folder', color: '#0ea5e9', w: 820, h: 560 },
   { id: 'wallpaper', title: 'Wallpaper', icon: 'image', color: '#db2777', w: 720, h: 680 },
   { id: 'guestbook', title: 'Guestbook', icon: 'message', color: '#f59e0b', w: 900, h: 640 },
-  { id: 'games', title: 'Arcade', icon: 'gamepad', color: '#ef4444', w: 760, h: 600 },
+  { id: 'play', title: 'AI Playground', icon: 'bot', color: '#7c3aed', w: 820, h: 660 },
+  { id: 'card', title: 'Business Card', icon: 'id-card', color: '#f97316', w: 640, h: 500 },
   { id: 'monitor', title: 'System Monitor', icon: 'activity', color: '#06b6d4', w: 900, h: 640 },
   { id: 'resume', title: 'Resume.pdf', icon: 'file', color: '#64748b', w: 820, h: 700 },
 ];

@@ -78,7 +78,7 @@ export class Spotlight {
     { kind: 'action', label: 'Turn "Alpha" wake word on/off', sub: 'Wake ALPHA with your voice', icon: 'mic', run: () => this.kai.toggleWake() },
     { kind: 'action', label: 'Ask ALPHA', sub: 'Open the voice assistant', icon: 'mic', run: () => this.kai.chatOpen.set(true) },
     ...PROJECTS.map(p => ({ kind: 'project', label: p.title, sub: `${p.org} · ${p.period}`, icon: 'folder', run: () => this.bus.showProject(p.title) })),
-    ...GAMES.map(g => ({ kind: 'game', label: g.title, sub: g.text, icon: g.icon, run: () => { this.arcade.game.set(g.id); this.os.open('games'); } })),
+    ...GAMES.map(g => ({ kind: 'game', label: g.title, sub: g.text, icon: g.icon, run: () => { this.arcade.game.set(g.id); this.os.open('play'); } })),
     ...AI_FEATURES.filter(f => f.action).map(f => ({ kind: 'ai', label: f.title, sub: f.text, icon: f.icon, run: () => this.launcher.run(f) })),
     ...SKILL_CATEGORIES.flatMap(c => c.skills.map(s => ({ kind: 'skill', label: s.name, sub: c.name, icon: 'layers', run: () => this.os.open('skills') }))),
     ...STUDY_GUIDES.flatMap(g => g.topics.map(t => ({ kind: 'chapter', label: t.title, sub: `${g.short} · ${t.questions} questions`, icon: 'book-open', run: () => window.open(`${g.file}#${t.id}`, '_blank', 'noopener') }))),

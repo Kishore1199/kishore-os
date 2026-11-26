@@ -9,10 +9,9 @@ export const DIALOG_STYLES = `
     h2 { font-size: 1.05rem; } h3 { font-size: 1rem; margin-bottom: 4px; }
     .body { flex: 1; min-height: 0; overflow-y: auto; overscroll-behavior: contain; padding: 18px 22px; display: grid; gap: 14px; align-content: start; }
     label, .sum { font-size: 0.9rem; color: var(--text-2); }
-    textarea, select { width: 100%; padding: 12px 14px; font: inherit; font-size: 0.88rem; line-height: 1.5; color: var(--text); background: var(--surface-2); border: 1px solid var(--border-strong); border-radius: 14px; }
-    select option { background: var(--surface-solid); color: var(--text); }
+    textarea { width: 100%; padding: 12px 14px; font: inherit; font-size: 0.88rem; line-height: 1.5; color: var(--text); background: var(--surface-2); border: 1px solid var(--border-strong); border-radius: 14px; }
     textarea { resize: vertical; }
-    textarea:focus, select:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+    textarea:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
     textarea:disabled { opacity: 0.6; }
     .note { font-size: 0.76rem; color: var(--text-2); }
     .err { font-size: 0.84rem; color: var(--bad); }

@@ -62,7 +62,7 @@ export const PATHS: { label: string; icon: string; line: string; steps: string[]
 const HINTS: Record<string, string> = {
   'Job description matcher': 'hire hiring recruit vacancy jd fit role candidate', 'Resume analyzer': 'cv resume', 'Resume PDF analysis': 'cv pdf', 'Mock interview': 'practice practise prepare', 'Technical quiz': 'test exam mcq', 'SQL playground': 'database query mysql',
   'Debugging assistant': 'error bug exception fix crash', 'Voice assistant': 'speak mic', 'Live talk': 'speak talk conversation chat', 'Skill detective': 'game play fun', 'Rock, paper, scissors': 'game play fun', 'Code typing race': 'game play fun type', 'Robot studio': 'dance fun robot play', 'Daily challenge': 'game question streak', 'Text to speech': 'listen aloud hear', 'Contact agent': 'email message hire contact', 'Meeting agent': 'call schedule calendar book',
-  'Learning roadmap': 'study plan learn', 'Concept explainer': 'teach understand learn', 'Personal AI twin': 'about kishore who', 'Offline app': 'install download', 'Tamil and Hindi': 'language', 'Code review': 'check code quality', 'Skill graph': 'visual', 'GitHub explorer': 'repository code',
+  'Learning roadmap': 'study plan learn', 'Concept explainer': 'teach understand learn', 'Personal AI twin': 'about kishore who', 'Offline app': 'install download', 'Indian languages': 'language tamil hindi telugu malayalam', 'Code review': 'check code quality', 'Skill graph': 'visual', 'GitHub explorer': 'repository code',
 };
 const SKIP = new Set(['i', 'a', 'an', 'the', 'to', 'my', 'me', 'want', 'need', 'for', 'with', 'of', 'and', 'help', 'how', 'can', 'you', 'do', 'some', 'is', 'in', 'on', 'it']);
 

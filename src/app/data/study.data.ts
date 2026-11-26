@@ -35,7 +35,7 @@ export const STUDY_GUIDES: StudyGuide[] = [
         "id": "java",
         "title": "Core Java Overview",
         "group": "Core Java",
-        "questions": 39,
+        "questions": 43,
         "isNew": false,
         "quiz": [
           "JDK vs JRE vs JVM?",
@@ -46,7 +46,7 @@ export const STUDY_GUIDES: StudyGuide[] = [
         "id": "jbasics",
         "title": "Java Language Basics",
         "group": "Core Java",
-        "questions": 60,
+        "questions": 64,
         "isNew": false,
         "quiz": [
           "Is Java compiled or interpreted? Why is it called platform independent?",
@@ -57,7 +57,7 @@ export const STUDY_GUIDES: StudyGuide[] = [
         "id": "joop",
         "title": "OOP in Java",
         "group": "Core Java",
-        "questions": 58,
+        "questions": 62,
         "isNew": false,
         "quiz": [
           "What is the difference between a class, an object and a reference?",
@@ -68,7 +68,7 @@ export const STUDY_GUIDES: StudyGuide[] = [
         "id": "jstrings",
         "title": "Strings & Text",
         "group": "Core Java",
-        "questions": 49,
+        "questions": 53,
         "isNew": false,
         "quiz": [
           "Why is String final? How is immutability actually enforced?",
@@ -79,7 +79,7 @@ export const STUDY_GUIDES: StudyGuide[] = [
         "id": "jexceptions",
         "title": "Exception Handling",
         "group": "Core Java",
-        "questions": 48,
+        "questions": 52,
         "isNew": false,
         "quiz": [
           "What is the difference between Exception and Error? Can you catch an Error?",
@@ -90,7 +90,7 @@ export const STUDY_GUIDES: StudyGuide[] = [
         "id": "jgenerics",
         "title": "Generics",
         "group": "Core Java",
-        "questions": 44,
+        "questions": 47,
         "isNew": false,
         "quiz": [
           "What problem do generics solve?",
@@ -101,7 +101,7 @@ export const STUDY_GUIDES: StudyGuide[] = [
         "id": "jcollections",
         "title": "Collections Deep Dive",
         "group": "Core Java",
-        "questions": 70,
+        "questions": 74,
         "isNew": false,
         "quiz": [
           "How does ArrayList grow? What is the default capacity?",
@@ -112,7 +112,7 @@ export const STUDY_GUIDES: StudyGuide[] = [
         "id": "jfunctional",
         "title": "Lambdas, Streams & Optional",
         "group": "Core Java",
-        "questions": 69,
+        "questions": 73,
         "isNew": false,
         "quiz": [
           "Output? A stream with filter that prints, and no terminal operation.",
@@ -123,7 +123,7 @@ export const STUDY_GUIDES: StudyGuide[] = [
         "id": "jthreads",
         "title": "Multithreading & Concurrency",
         "group": "Core Java",
-        "questions": 65,
+        "questions": 69,
         "isNew": false,
         "quiz": [
           "Output? t.run(); t.start(); t.join(); t.start(); where the task prints the thread name and t is named \"worker\".",
@@ -134,7 +134,7 @@ export const STUDY_GUIDES: StudyGuide[] = [
         "id": "jio",
         "title": "File I/O, NIO & Serialization",
         "group": "Core Java",
-        "questions": 44,
+        "questions": 48,
         "isNew": false,
         "quiz": [
           "Byte stream vs character stream: when do you use each?",
@@ -145,7 +145,7 @@ export const STUDY_GUIDES: StudyGuide[] = [
         "id": "jdatetime",
         "title": "Date/Time, Annotations & Reflection",
         "group": "Core Java",
-        "questions": 51,
+        "questions": 54,
         "isNew": false,
         "quiz": [
           "What was wrong with java.util.Date and Calendar?",
@@ -156,7 +156,7 @@ export const STUDY_GUIDES: StudyGuide[] = [
         "id": "jvm",
         "title": "JVM Internals & Performance",
         "group": "Core Java",
-        "questions": 50,
+        "questions": 53,
         "isNew": false,
         "quiz": [
           "What is the difference between the JVM specification and HotSpot?",
@@ -165,9 +165,9 @@ export const STUDY_GUIDES: StudyGuide[] = [
       },
       {
         "id": "jversions",
-        "title": "Java Versions: 8 → 25",
+        "title": "Java Versions: 1.0 → 26",
         "group": "Core Java",
-        "questions": 36,
+        "questions": 58,
         "isNew": false,
         "quiz": [
           "What is LTS, and what is the current release cadence?",
@@ -178,7 +178,7 @@ export const STUDY_GUIDES: StudyGuide[] = [
         "id": "jpatterns",
         "title": "SOLID & Design Patterns",
         "group": "Engineering Practice",
-        "questions": 43,
+        "questions": 47,
         "isNew": false,
         "quiz": [
           "Explain the Single Responsibility Principle in a way that isn't \"a class does one thing\".",
@@ -189,7 +189,7 @@ export const STUDY_GUIDES: StudyGuide[] = [
         "id": "jtesting",
         "title": "Testing: JUnit & Mockito",
         "group": "Engineering Practice",
-        "questions": 44,
+        "questions": 48,
         "isNew": false,
         "quiz": [
           "What is the test pyramid, and when would you deviate from it?",
@@ -200,7 +200,7 @@ export const STUDY_GUIDES: StudyGuide[] = [
         "id": "jbuild",
         "title": "Maven, Gradle & Logging",
         "group": "Engineering Practice",
-        "questions": 39,
+        "questions": 43,
         "isNew": false,
         "quiz": [
           "What's the difference between a Maven lifecycle, phase, goal and plugin?",
@@ -211,7 +211,7 @@ export const STUDY_GUIDES: StudyGuide[] = [
         "id": "qatesting",
         "title": "Manual Testing, Playwright & Postman",
         "group": "Engineering Practice",
-        "questions": 28,
+        "questions": 32,
         "isNew": true,
         "quiz": [
           "What is the difference between smoke and sanity testing?",
@@ -222,7 +222,7 @@ export const STUDY_GUIDES: StudyGuide[] = [
         "id": "agile",
         "title": "Agile, Scrum & SDLC",
         "group": "Engineering Practice",
-        "questions": 28,
+        "questions": 33,
         "isNew": true,
         "quiz": [
           "What are the phases of the SDLC?",
@@ -233,7 +233,7 @@ export const STUDY_GUIDES: StudyGuide[] = [
         "id": "aidev",
         "title": "AI-Assisted Development",
         "group": "Engineering Practice",
-        "questions": 26,
+        "questions": 30,
         "isNew": true,
         "quiz": [
           "How do you use AI tools in your day-to-day development?",
@@ -244,7 +244,7 @@ export const STUDY_GUIDES: StudyGuide[] = [
         "id": "servlet",
         "title": "Servlets",
         "group": "Java Web & Database",
-        "questions": 52,
+        "questions": 56,
         "isNew": false,
         "quiz": [
           "What is a Servlet and a Servlet container?",
@@ -255,7 +255,7 @@ export const STUDY_GUIDES: StudyGuide[] = [
         "id": "jsp",
         "title": "JSP",
         "group": "Java Web & Database",
-        "questions": 41,
+        "questions": 45,
         "isNew": false,
         "quiz": [
           "JSP vs Servlet?",
@@ -266,7 +266,7 @@ export const STUDY_GUIDES: StudyGuide[] = [
         "id": "jdbc",
         "title": "JDBC",
         "group": "Java Web & Database",
-        "questions": 42,
+        "questions": 46,
         "isNew": false,
         "quiz": [
           "Steps to connect to a DB using JDBC?",
@@ -277,7 +277,7 @@ export const STUDY_GUIDES: StudyGuide[] = [
         "id": "mysql",
         "title": "MySQL / SQL",
         "group": "Java Web & Database",
-        "questions": 68,
+        "questions": 73,
         "isNew": false,
         "quiz": [
           "What is ACID?",
@@ -288,7 +288,7 @@ export const STUDY_GUIDES: StudyGuide[] = [
         "id": "jasper",
         "title": "JasperReports & Jasper Studio",
         "group": "Java Web & Database",
-        "questions": 25,
+        "questions": 28,
         "isNew": true,
         "quiz": [
           "What is the difference between JasperReports and Jaspersoft Studio?",
@@ -299,7 +299,7 @@ export const STUDY_GUIDES: StudyGuide[] = [
         "id": "spring",
         "title": "Spring Framework",
         "group": "Spring & APIs",
-        "questions": 71,
+        "questions": 75,
         "isNew": false,
         "quiz": [
           "What is IoC and DI?",
@@ -310,7 +310,7 @@ export const STUDY_GUIDES: StudyGuide[] = [
         "id": "boot",
         "title": "Spring Boot",
         "group": "Spring & APIs",
-        "questions": 51,
+        "questions": 55,
         "isNew": false,
         "quiz": [
           "Spring vs Spring Boot?",
@@ -321,7 +321,7 @@ export const STUDY_GUIDES: StudyGuide[] = [
         "id": "actuator",
         "title": "Spring Boot Actuator",
         "group": "Spring & APIs",
-        "questions": 24,
+        "questions": 28,
         "isNew": false,
         "quiz": [
           "What is Spring Boot Actuator and why use it?",
@@ -332,7 +332,7 @@ export const STUDY_GUIDES: StudyGuide[] = [
         "id": "swagger",
         "title": "Swagger / OpenAPI",
         "group": "Spring & APIs",
-        "questions": 20,
+        "questions": 24,
         "isNew": false,
         "quiz": [
           "What is the difference between Swagger and OpenAPI?",
@@ -343,7 +343,7 @@ export const STUDY_GUIDES: StudyGuide[] = [
         "id": "security",
         "title": "Spring Security",
         "group": "Spring & APIs",
-        "questions": 48,
+        "questions": 52,
         "isNew": false,
         "quiz": [
           "Authentication vs Authorization?",
@@ -354,7 +354,7 @@ export const STUDY_GUIDES: StudyGuide[] = [
         "id": "jwt",
         "title": "JWT",
         "group": "Spring & APIs",
-        "questions": 38,
+        "questions": 42,
         "isNew": false,
         "quiz": [
           "What is JWT and what are its three parts?",
@@ -365,7 +365,7 @@ export const STUDY_GUIDES: StudyGuide[] = [
         "id": "rest",
         "title": "REST API Design",
         "group": "Spring & APIs",
-        "questions": 49,
+        "questions": 53,
         "isNew": false,
         "quiz": [
           "What is REST? What are its constraints?",
@@ -376,7 +376,7 @@ export const STUDY_GUIDES: StudyGuide[] = [
         "id": "jpa",
         "title": "JPA & Spring Data JPA",
         "group": "Persistence",
-        "questions": 58,
+        "questions": 62,
         "isNew": false,
         "quiz": [
           "JPA vs Hibernate vs Spring Data JPA?",
@@ -387,7 +387,7 @@ export const STUDY_GUIDES: StudyGuide[] = [
         "id": "hibernate",
         "title": "Hibernate",
         "group": "Persistence",
-        "questions": 48,
+        "questions": 51,
         "isNew": false,
         "quiz": [
           "What is Hibernate and why use it over JDBC?",
@@ -398,7 +398,7 @@ export const STUDY_GUIDES: StudyGuide[] = [
         "id": "mongodb",
         "title": "MongoDB",
         "group": "Persistence",
-        "questions": 27,
+        "questions": 31,
         "isNew": true,
         "quiz": [
           "What is MongoDB and how does it differ from a relational database?",
@@ -409,7 +409,7 @@ export const STUDY_GUIDES: StudyGuide[] = [
         "id": "firebase",
         "title": "Firebase",
         "group": "Persistence",
-        "questions": 25,
+        "questions": 29,
         "isNew": true,
         "quiz": [
           "What is Firebase and when would you use it?",
@@ -420,7 +420,7 @@ export const STUDY_GUIDES: StudyGuide[] = [
         "id": "micro",
         "title": "Microservices",
         "group": "Distributed Systems",
-        "questions": 59,
+        "questions": 64,
         "isNew": false,
         "quiz": [
           "Monolith vs Microservices — pros and cons?",
@@ -431,7 +431,7 @@ export const STUDY_GUIDES: StudyGuide[] = [
         "id": "kafka",
         "title": "Apache Kafka",
         "group": "Distributed Systems",
-        "questions": 48,
+        "questions": 52,
         "isNew": false,
         "quiz": [
           "What is Kafka? Core terms?",
@@ -439,10 +439,21 @@ export const STUDY_GUIDES: StudyGuide[] = [
         ]
       },
       {
+        "id": "sysdesign",
+        "title": "System Design",
+        "group": "Distributed Systems",
+        "questions": 40,
+        "isNew": true,
+        "quiz": [
+          "How do you structure a 45-minute system design interview?",
+          "What is a Bloom filter, and where would you use one in a design?"
+        ]
+      },
+      {
         "id": "angular",
         "title": "Angular",
         "group": "Frontend",
-        "questions": 74,
+        "questions": 79,
         "isNew": false,
         "quiz": [
           "AngularJS vs Angular?",
@@ -453,7 +464,7 @@ export const STUDY_GUIDES: StudyGuide[] = [
         "id": "javascript",
         "title": "JavaScript",
         "group": "Frontend",
-        "questions": 62,
+        "questions": 67,
         "isNew": false,
         "quiz": [
           "var vs let vs const?",
@@ -464,7 +475,7 @@ export const STUDY_GUIDES: StudyGuide[] = [
         "id": "jsdeep",
         "title": "JavaScript Deep Dive",
         "group": "Frontend",
-        "questions": 62,
+        "questions": 67,
         "isNew": false,
         "quiz": [
           "Is JavaScript single-threaded? Then how does it do async work?",
@@ -475,7 +486,7 @@ export const STUDY_GUIDES: StudyGuide[] = [
         "id": "ajax",
         "title": "AJAX",
         "group": "Frontend",
-        "questions": 28,
+        "questions": 32,
         "isNew": false,
         "quiz": [
           "What is AJAX and what problem does it solve?",
@@ -486,7 +497,7 @@ export const STUDY_GUIDES: StudyGuide[] = [
         "id": "jquery",
         "title": "jQuery",
         "group": "Frontend",
-        "questions": 30,
+        "questions": 34,
         "isNew": false,
         "quiz": [
           "What is jQuery and why was it so popular?",
@@ -497,7 +508,7 @@ export const STUDY_GUIDES: StudyGuide[] = [
         "id": "htmlcss",
         "title": "HTML & CSS",
         "group": "Frontend",
-        "questions": 26,
+        "questions": 31,
         "isNew": true,
         "quiz": [
           "What is semantic HTML and why does it matter?",
@@ -508,7 +519,7 @@ export const STUDY_GUIDES: StudyGuide[] = [
         "id": "typescript",
         "title": "TypeScript",
         "group": "Frontend",
-        "questions": 23,
+        "questions": 27,
         "isNew": true,
         "quiz": [
           "What is TypeScript and why use it over JavaScript?",
@@ -519,7 +530,7 @@ export const STUDY_GUIDES: StudyGuide[] = [
         "id": "ionic",
         "title": "Ionic Framework",
         "group": "Frontend",
-        "questions": 23,
+        "questions": 27,
         "isNew": true,
         "quiz": [
           "What is Ionic and how does a hybrid app work?",
@@ -530,7 +541,7 @@ export const STUDY_GUIDES: StudyGuide[] = [
         "id": "jenkins",
         "title": "Jenkins & CI/CD",
         "group": "DevOps & Monitoring",
-        "questions": 43,
+        "questions": 47,
         "isNew": false,
         "quiz": [
           "What is CI/CD? CI vs Continuous Delivery vs Continuous Deployment?",
@@ -541,7 +552,7 @@ export const STUDY_GUIDES: StudyGuide[] = [
         "id": "splunk",
         "title": "Splunk",
         "group": "DevOps & Monitoring",
-        "questions": 38,
+        "questions": 42,
         "isNew": false,
         "quiz": [
           "What is Splunk and how did you use it?",
@@ -552,7 +563,7 @@ export const STUDY_GUIDES: StudyGuide[] = [
         "id": "git",
         "title": "Git, GitHub & SVN",
         "group": "DevOps & Monitoring",
-        "questions": 27,
+        "questions": 32,
         "isNew": true,
         "quiz": [
           "What is the difference between Git and GitHub?",
@@ -563,7 +574,7 @@ export const STUDY_GUIDES: StudyGuide[] = [
         "id": "docker",
         "title": "Docker & Containers",
         "group": "DevOps & Monitoring",
-        "questions": 27,
+        "questions": 32,
         "isNew": true,
         "quiz": [
           "What is the difference between a container and a virtual machine?",
@@ -574,7 +585,7 @@ export const STUDY_GUIDES: StudyGuide[] = [
         "id": "gcp",
         "title": "Google Cloud (GCP)",
         "group": "DevOps & Monitoring",
-        "questions": 24,
+        "questions": 28,
         "isNew": true,
         "quiz": [
           "What is the difference between a region and a zone?",
@@ -585,7 +596,7 @@ export const STUDY_GUIDES: StudyGuide[] = [
         "id": "sentry",
         "title": "Sentry & Error Monitoring",
         "group": "DevOps & Monitoring",
-        "questions": 23,
+        "questions": 26,
         "isNew": true,
         "quiz": [
           "What is Sentry and why use it instead of just logs?",
@@ -596,7 +607,7 @@ export const STUDY_GUIDES: StudyGuide[] = [
         "id": "php",
         "title": "PHP 8 & Twig",
         "group": "PHP & Healthcare",
-        "questions": 27,
+        "questions": 32,
         "isNew": true,
         "quiz": [
           "What does the PHP request lifecycle look like with Nginx and php-fpm?",
@@ -607,7 +618,7 @@ export const STUDY_GUIDES: StudyGuide[] = [
         "id": "openemr",
         "title": "OpenEMR, FHIR & Healthcare IT",
         "group": "PHP & Healthcare",
-        "questions": 26,
+        "questions": 30,
         "isNew": true,
         "quiz": [
           "What is the difference between an EMR and an EHR?",
@@ -618,7 +629,7 @@ export const STUDY_GUIDES: StudyGuide[] = [
         "id": "commands",
         "title": "Command Cheat Sheet",
         "group": "Revision",
-        "questions": 12,
+        "questions": 17,
         "isNew": true,
         "quiz": [
           "git merge vs git rebase — when do you use each?",
@@ -649,7 +660,7 @@ export const STUDY_GUIDES: StudyGuide[] = [
         "id": "bigo",
         "title": "Big-O & Patterns",
         "group": "DSA patterns",
-        "questions": 7,
+        "questions": 11,
         "isNew": false,
         "quiz": [
           "How do you work out the time complexity of loops?",
@@ -660,7 +671,7 @@ export const STUDY_GUIDES: StudyGuide[] = [
         "id": "arrays",
         "title": "Arrays & Hashing",
         "group": "DSA patterns",
-        "questions": 22,
+        "questions": 26,
         "isNew": false,
         "quiz": [
           "Two Sum: return the indices of two numbers that add up to target",
@@ -671,7 +682,7 @@ export const STUDY_GUIDES: StudyGuide[] = [
         "id": "strings",
         "title": "Strings",
         "group": "DSA patterns",
-        "questions": 17,
+        "questions": 21,
         "isNew": false,
         "quiz": [
           "Valid Anagram",
@@ -682,7 +693,7 @@ export const STUDY_GUIDES: StudyGuide[] = [
         "id": "window",
         "title": "Two Pointers & Sliding Window",
         "group": "DSA patterns",
-        "questions": 14,
+        "questions": 18,
         "isNew": false,
         "quiz": [
           "Longest Substring Without Repeating Characters",
@@ -693,7 +704,7 @@ export const STUDY_GUIDES: StudyGuide[] = [
         "id": "bsearch",
         "title": "Binary Search",
         "group": "DSA patterns",
-        "questions": 13,
+        "questions": 17,
         "isNew": false,
         "quiz": [
           "Classic Binary Search",
@@ -704,7 +715,7 @@ export const STUDY_GUIDES: StudyGuide[] = [
         "id": "linkedlist",
         "title": "Linked List",
         "group": "DSA patterns",
-        "questions": 14,
+        "questions": 18,
         "isNew": false,
         "quiz": [
           "Reverse a Linked List (iterative and recursive)",
@@ -715,7 +726,7 @@ export const STUDY_GUIDES: StudyGuide[] = [
         "id": "stack",
         "title": "Stack & Queue",
         "group": "DSA patterns",
-        "questions": 12,
+        "questions": 15,
         "isNew": false,
         "quiz": [
           "Min Stack: push, pop, top and getMin all in O(1)",
@@ -726,7 +737,7 @@ export const STUDY_GUIDES: StudyGuide[] = [
         "id": "trees",
         "title": "Trees & BST",
         "group": "DSA patterns",
-        "questions": 17,
+        "questions": 21,
         "isNew": false,
         "quiz": [
           "Inorder, Preorder and Postorder (recursive and iterative)",
@@ -737,7 +748,7 @@ export const STUDY_GUIDES: StudyGuide[] = [
         "id": "graphs",
         "title": "Graphs",
         "group": "DSA patterns",
-        "questions": 13,
+        "questions": 18,
         "isNew": false,
         "quiz": [
           "BFS and DFS template on an adjacency list",
@@ -748,7 +759,7 @@ export const STUDY_GUIDES: StudyGuide[] = [
         "id": "heap",
         "title": "Heap / PriorityQueue",
         "group": "DSA patterns",
-        "questions": 10,
+        "questions": 14,
         "isNew": false,
         "quiz": [
           "Kth Largest Element in an Array",
@@ -759,7 +770,7 @@ export const STUDY_GUIDES: StudyGuide[] = [
         "id": "backtrack",
         "title": "Recursion & Backtracking",
         "group": "DSA patterns",
-        "questions": 12,
+        "questions": 16,
         "isNew": false,
         "quiz": [
           "Subsets (Power Set)",
@@ -770,7 +781,7 @@ export const STUDY_GUIDES: StudyGuide[] = [
         "id": "dp",
         "title": "Dynamic Programming",
         "group": "DSA patterns",
-        "questions": 17,
+        "questions": 21,
         "isNew": false,
         "quiz": [
           "Fibonacci / Climbing Stairs: recursion, then memoisation, then tabulation",
@@ -781,7 +792,7 @@ export const STUDY_GUIDES: StudyGuide[] = [
         "id": "greedy",
         "title": "Greedy & Intervals",
         "group": "DSA patterns",
-        "questions": 18,
+        "questions": 22,
         "isNew": true,
         "quiz": [
           "Jump Game: can you reach the last index?",
@@ -792,7 +803,7 @@ export const STUDY_GUIDES: StudyGuide[] = [
         "id": "trie",
         "title": "Tries & Union-Find",
         "group": "DSA patterns",
-        "questions": 13,
+        "questions": 16,
         "isNew": true,
         "quiz": [
           "Implement Trie (insert, search, startsWith)",
@@ -803,7 +814,7 @@ export const STUDY_GUIDES: StudyGuide[] = [
         "id": "bits",
         "title": "Bit Manipulation",
         "group": "DSA patterns",
-        "questions": 15,
+        "questions": 19,
         "isNew": true,
         "quiz": [
           "Single Number: every element appears twice except one",
@@ -811,10 +822,32 @@ export const STUDY_GUIDES: StudyGuide[] = [
         ]
       },
       {
+        "id": "math",
+        "title": "Math & Number Theory",
+        "group": "DSA patterns",
+        "questions": 21,
+        "isNew": true,
+        "quiz": [
+          "Pow(x, n) with a negative exponent",
+          "Fraction to Recurring Decimal"
+        ]
+      },
+      {
+        "id": "advds",
+        "title": "Segment Tree, Fenwick & Cache Design",
+        "group": "DSA patterns",
+        "questions": 17,
+        "isNew": true,
+        "quiz": [
+          "Range Sum Query – Mutable (Fenwick tree)",
+          "My Calendar I (no double booking)"
+        ]
+      },
+      {
         "id": "sorting",
         "title": "Sorting Algorithms",
         "group": "DSA patterns",
-        "questions": 11,
+        "questions": 16,
         "isNew": false,
         "quiz": [
           "Bubble Sort (with early exit)",
@@ -825,7 +858,7 @@ export const STUDY_GUIDES: StudyGuide[] = [
         "id": "javaprog",
         "title": "Java Coding Programs",
         "group": "Java & Spring coding",
-        "questions": 30,
+        "questions": 35,
         "isNew": false,
         "quiz": [
           "Reverse a String (4 ways)",
@@ -836,7 +869,7 @@ export const STUDY_GUIDES: StudyGuide[] = [
         "id": "streams",
         "title": "Java 8 Streams Coding",
         "group": "Java & Spring coding",
-        "questions": 25,
+        "questions": 30,
         "isNew": false,
         "quiz": [
           "Group employees by department / count per department",
@@ -847,7 +880,7 @@ export const STUDY_GUIDES: StudyGuide[] = [
         "id": "concurrency",
         "title": "Multithreading Coding",
         "group": "Java & Spring coding",
-        "questions": 14,
+        "questions": 19,
         "isNew": false,
         "quiz": [
           "Print odd and even numbers with two threads, in order",
@@ -858,7 +891,7 @@ export const STUDY_GUIDES: StudyGuide[] = [
         "id": "springcode",
         "title": "Spring Boot Coding Tasks",
         "group": "Java & Spring coding",
-        "questions": 18,
+        "questions": 23,
         "isNew": true,
         "quiz": [
           "REST CRUD controller with validation (@Valid and DTO records)",
@@ -869,7 +902,7 @@ export const STUDY_GUIDES: StudyGuide[] = [
         "id": "jpacode",
         "title": "JPA / Hibernate Coding",
         "group": "Java & Spring coding",
-        "questions": 18,
+        "questions": 23,
         "isNew": true,
         "quiz": [
           "Entity mapping: @OneToMany / @ManyToOne with cascade and orphanRemoval",
@@ -880,7 +913,7 @@ export const STUDY_GUIDES: StudyGuide[] = [
         "id": "jscode",
         "title": "JavaScript Coding",
         "group": "Frontend coding",
-        "questions": 34,
+        "questions": 38,
         "isNew": false,
         "quiz": [
           "Reverse a string, check for a palindrome, capitalise each word",
@@ -891,7 +924,7 @@ export const STUDY_GUIDES: StudyGuide[] = [
         "id": "jsoutput",
         "title": "JavaScript \"Guess the Output\"",
         "group": "Frontend coding",
-        "questions": 20,
+        "questions": 24,
         "isNew": false,
         "quiz": [
           "Event loop order: setTimeout vs Promise vs sync code",
@@ -902,7 +935,7 @@ export const STUDY_GUIDES: StudyGuide[] = [
         "id": "tscode",
         "title": "TypeScript Coding",
         "group": "Frontend coding",
-        "questions": 16,
+        "questions": 21,
         "isNew": true,
         "quiz": [
           "Typed debounce and throttle",
@@ -913,7 +946,7 @@ export const STUDY_GUIDES: StudyGuide[] = [
         "id": "ngcode",
         "title": "Angular Coding Tasks",
         "group": "Frontend coding",
-        "questions": 25,
+        "questions": 31,
         "isNew": false,
         "quiz": [
           "Search box with debounce and switchMap (typeahead)",
@@ -924,7 +957,7 @@ export const STUDY_GUIDES: StudyGuide[] = [
         "id": "sql",
         "title": "MySQL Query Questions",
         "group": "SQL & NoSQL",
-        "questions": 52,
+        "questions": 57,
         "isNew": false,
         "quiz": [
           "Schema and sample data script (run this first)",
@@ -935,7 +968,7 @@ export const STUDY_GUIDES: StudyGuide[] = [
         "id": "mongoq",
         "title": "MongoDB Query Questions",
         "group": "SQL & NoSQL",
-        "questions": 19,
+        "questions": 24,
         "isNew": true,
         "quiz": [
           "Find with comparison and logical operators",
@@ -946,7 +979,7 @@ export const STUDY_GUIDES: StudyGuide[] = [
         "id": "phpcode",
         "title": "PHP Coding Programs",
         "group": "PHP coding",
-        "questions": 18,
+        "questions": 23,
         "isNew": true,
         "quiz": [
           "Reverse a string and check for a palindrome",

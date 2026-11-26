@@ -26,6 +26,7 @@ import { ChangeDetectionStrategy, Component, input } from '@angular/core';
         @case ('zap') { <path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/> }
         @case ('lock') { <rect width="18" height="11" x="3" y="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/> }
         @case ('layers') { <path d="m12 2 10 5-10 5L2 7z"/><path d="m2 12 10 5 10-5"/><path d="m2 17 10 5 10-5"/> }
+        @case ('id-card') { <rect width="20" height="16" x="2" y="4" rx="2.5"/><circle cx="8.5" cy="10.5" r="2.2"/><path d="M5.2 16.2c.6-1.6 1.9-2.4 3.3-2.4s2.7.8 3.3 2.4"/><path d="M14.5 9.5h4"/><path d="M14.5 13h3"/> }
         @case ('play') { <polygon points="6 3 20 12 6 21 6 3"/> }
         @case ('mic') { <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" x2="12" y1="19" y2="22"/> }
         @case ('volume') { <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/> }

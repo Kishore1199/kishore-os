@@ -10,7 +10,7 @@ export type WinCmd =
 const NAMES: [RegExp, AppId][] = [
   [/^(about( me)?|profile|bio)$/, 'about'], [/^projects?$/, 'projects'], [/^(experience|career|jobs?)$/, 'experience'], [/^(skills?|tech stack)$/, 'skills'],
   [/^(study )?notes$|^interview notes$/, 'notes'], [/^(terminal|shell|console|command line)$/, 'terminal'], [/^(contact|contact form)$/, 'contact'],
-  [/^(arcade|games?)$/, 'games'], [/^(system )?monitor$|^task manager$/, 'monitor'], [/^(resume|cv)( pdf)?$/, 'resume'], [/^guest ?book$/, 'guestbook'],
+  [/^(ai )?playground$|^arcade$|^games?$|^mission control$|^mind reader$/, 'play'], [/^(system )?monitor$|^task manager$/, 'monitor'], [/^(resume|cv)( pdf)?$/, 'resume'], [/^guest ?book$/, 'guestbook'], [/^(business |contact |visiting )?card$|^v ?card$/, 'card'],
   [/^(desktop )?(wallpapers?|background)( image| picture| photo)?( settings)?$/, 'wallpaper'],
   [/^ai ?lab$|^a i lab$/, 'ailab'], [/^(my )?(files|saved files|file manager)$/, 'files'],
 ];
@@ -62,7 +62,7 @@ export function windowCommand(raw: string): { cmd: WinCmd; text: string } | null
   if (m) {
     const a = appNamed(m[1]);
     // the sections have their own spoken introductions
-    if (a && ['terminal', 'games', 'monitor', 'resume', 'guestbook', 'files', 'wallpaper'].includes(a)) return { cmd: { do: 'open', app: a }, text: `Opening ${title(a)}.` };
+    if (a && ['terminal', 'play', 'card', 'monitor', 'resume', 'guestbook', 'files', 'wallpaper'].includes(a)) return { cmd: { do: 'open', app: a }, text: `Opening ${title(a)}.` };
   }
   return null;
 }

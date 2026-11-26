@@ -20,5 +20,5 @@ EDUCATION:
 ${edu}${compact ? '' : `
 INTERVIEW-PREP NOTES ON THIS SITE (chapter titles):
 ${notes}`}
-THIS SITE: Kishore.OS — Kishore's portfolio as a small desktop operating system, built with Angular 22 and three.js. Its apps open in windows: About Me, Projects, Experience (with education), Skills, Study Notes, Terminal, Contact, AI Lab, Files, Wallpaper, Guestbook, Arcade, System Monitor and Resume. It has a dock, Spotlight search (Ctrl K), a menu bar, and ALPHA the voice guide.`;
+THIS SITE: Kishore.OS — Kishore's portfolio as a small desktop operating system, built with Angular 22 and three.js. Its apps open in windows: About Me, Projects, Experience (with education), Skills, Study Notes, Terminal, Contact, AI Lab, Files, Wallpaper, Guestbook, AI Playground (all the games. AI games — Mission Control: ALPHA plans and runs a fun mission on the desktop; On-call adventure: a choose-your-path incident story; Mind reader: ALPHA guesses a skill with yes or no questions. Quick games — Bug squash, Stack match, Coffee catch, Three in a row, Quick tap, Rock paper scissors, Skill detective, Typing race, Robot studio), Business Card (a flip card with a QR code that saves Kishore's contact to a phone, plus a .vcf download), System Monitor and Resume. It has a dock, Spotlight search (Ctrl K), a menu bar, and ALPHA the voice guide.`;
 }

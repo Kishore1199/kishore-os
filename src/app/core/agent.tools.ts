@@ -103,7 +103,7 @@ export const TOOL_DECLARATIONS: FunctionDeclaration[] = [
   },
   {
     name: 'arrangeWindows',
-    description: 'Open, close, snap, tile or arrange windows on the desktop. "side" puts app on the left and other on the right. "desktop" minimises everything. Use it when the visitor asks to move or arrange windows, or to open an app such as the terminal, arcade, monitor, files, guestbook or resume.',
+    description: 'Open, close, snap, tile or arrange windows on the desktop. "side" puts app on the left and other on the right. "desktop" minimises everything. Use it when the visitor asks to move or arrange windows, or to open an app such as the terminal, AI playground (games), monitor, business card, files, guestbook or resume.',
     parameters: {
       type: 'object',
       properties: {

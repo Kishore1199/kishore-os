@@ -116,13 +116,13 @@ export type Zone = 'face' | 'belly' | 'head' | 'hand' | 'ear' | 'feet';
             <g class="mouth">
               @switch (mood()) {
                 @case ('talk') { <path class="talk-mouth" d="M51 57h18q0 9-9 9t-9-9z" /> }
-                @case ('listen') { <circle class="o-mouth" cx="60" cy="61" r="3.2" /> }
-                @case ('sleep') { <ellipse class="snore" cx="60" cy="61" rx="3.4" ry="2.4" /> }
+                @case ('listen') { <path class="smile" d="M55 61h10" /> }
+                @case ('sleep') { <path class="smile sleepy" d="M54 60.5q6 3.5 12 0" /> }
                 @case ('giggle') { <path class="laugh" d="M49 55h22q0 13-11 13t-11-13z" /><path class="tongue" d="M55 64q5-4 10 0q-5 4-10 0z" /> }
                 @case ('dizzy') { <path class="smile wavy" d="M50 61q2.5-3 5 0t5 0t5 0t5 0" /> }
                 @case ('shy') { <path class="smile" d="M55 61q4 3 8 0" /> }
                 @case ('blink') { <path class="grin" d="M52.5 60h15q0 8-7.5 8t-7.5-8z" /> }
-                @case ('wow') { <ellipse class="o-wow" cx="60" cy="61" rx="5" ry="6" /> }
+                @case ('wow') { <path class="grin" d="M49 55h22q0 12-11 12t-11-12z" /> }
                 @case ('cool') { <path class="smile" d="M54 61q6 3 12-2" /> }
                 @case ('angry') { <path class="frown" d="M51 64q9-7 18 0" /> }
                 @case ('sad') { <path class="frown sadm" d="M53 64q7-5 14 0" /> }
@@ -205,9 +205,9 @@ export type Zone = 'face' | 'belly' | 'head' | 'hand' | 'ear' | 'feet';
     /* ── face ── */
     .eye, .grin, .laugh, .talk-mouth { fill: url(#rp-led); filter: drop-shadow(0 0 3px var(--glow)); }
     .eye { transform-box: fill-box; transform-origin: center; }
-    .eye-line, .smile, .frown, .o-mouth, .snore, .spiral, .yawn-mouth { fill: none; stroke: var(--led); stroke-width: 3.6; stroke-linecap: round; filter: drop-shadow(0 0 3px var(--glow)); }
+    .eye-line, .smile, .frown, .spiral, .yawn-mouth { fill: none; stroke: var(--led); stroke-width: 3.6; stroke-linecap: round; filter: drop-shadow(0 0 3px var(--glow)); }
     .spiral { stroke-width: 2.4; transform-box: fill-box; transform-origin: center; animation: spin 0.9s linear infinite; } .spiral.r2 { animation-direction: reverse; } @keyframes spin { to { transform: rotate(360deg); } }
-    .heart-eye, .star-eye, .angry-eye, .o-wow, .tear { fill: var(--led); filter: drop-shadow(0 0 4px var(--glow)); }
+    .heart-eye, .star-eye, .angry-eye, .tear { fill: var(--led); filter: drop-shadow(0 0 4px var(--glow)); }
     .heart-eye, .star-eye { transform-box: fill-box; transform-origin: center; animation: beat 0.7s ease-in-out infinite; } @keyframes beat { 50% { transform: scale(1.18); } }
     .tongue { fill: #1f6fb5; } .shades path:first-child, .shades rect { fill: #05060c; stroke: var(--led); stroke-width: 1; } .glint { stroke: #fff; stroke-width: 1.6; stroke-linecap: round; opacity: 0.8; }
     .shades { animation: shades 0.45s cubic-bezier(0.3, 1.5, 0.5, 1) both; } @keyframes shades { from { transform: translateY(-30px); opacity: 0; } }
@@ -215,8 +215,9 @@ export type Zone = 'face' | 'belly' | 'head' | 'hand' | 'ear' | 'feet';
     .blink { animation: blink 4.4s infinite; } @keyframes blink { 0%, 93%, 100% { transform: scaleY(1); } 96% { transform: scaleY(0.1); } }
     .fastblink { animation: fblink 0.7s ease-in-out; } @keyframes fblink { 0%, 40%, 100% { transform: scaleY(1); } 18%, 62% { transform: scaleY(0.08); } }
     .laugh { transform-box: fill-box; transform-origin: 50% 0; animation: laugh 0.22s ease-in-out infinite alternate; } @keyframes laugh { to { transform: scaleY(0.7); } }
-    .snore { stroke-width: 2.4; transform-box: fill-box; transform-origin: center; animation: snore 4s ease-in-out infinite; } @keyframes snore { 50% { transform: scale(1.5); } }
     .yawn-mouth { stroke-width: 2.4; transform-box: fill-box; transform-origin: center; animation: yawn 2.4s ease-in-out both; } @keyframes yawn { 0% { transform: scale(0.3); } 40%, 70% { transform: scale(1); } 100% { transform: scale(0.4); } }
+    /* sleeping: a calm closed mouth that breathes slowly */
+    .sleepy { stroke-width: 3; transform-box: fill-box; transform-origin: center; animation: breathe 4s ease-in-out infinite; } @keyframes breathe { 50% { transform: scaleX(1.12); } }
     /* talking: the mouth opens with the voice level */
     .talk-mouth { transform-box: fill-box; transform-origin: 50% 0; transform: scaleY(calc(0.5 + var(--lv, 0) * 0.9)); transition: transform 0.07s linear; }
     /* eyes follow the pointer while idle (--ex / --ey come from the parent, -1…1) */

@@ -10,6 +10,7 @@ import { looksLikeJob } from '../core/looks-like-job';
 import { GuideService } from '../core/guide.service';
 import { LabRouter } from '../lab/lab-router';
 import { LANGS } from '../core/language.service';
+import { Dropdown } from '../core/dropdown';
 import { OfflineService } from '../core/offline.service';
 import { SelectAsk } from './select-ask';
 import { Interview } from './interview';
@@ -25,7 +26,7 @@ const SUGGEST = ['Match a job description', 'Mock interview', 'Draft a message t
 @Component({
   selector: 'app-assistant',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [Icon, Interview, JobMatch, SelectAsk, NgTemplateOutlet, Robot],
+  imports: [Dropdown, Icon, Interview, JobMatch, SelectAsk, NgTemplateOutlet, Robot],
   template: `
     @if (os.matcher(); as m) {
       @defer (on immediate) { <app-job-match [seed]="m.text" (close)="os.matcher.set(null)" /> }
@@ -81,7 +82,7 @@ const SUGGEST = ['Match a job description', 'Mock interview', 'Draft a message t
           @if (kai.thinking()) { <p class="m dots" aria-label="ALPHA is thinking"><i></i><i></i><i></i></p> }
         </div>
         @if (kai.live()) { <div class="livebar" role="status"><i [class.on]="kai.voice.listening()"></i><span>{{ kai.voice.listening() ? (kai.voice.interim() || 'Listening…') : kai.thinking() ? 'Thinking…' : kai.voice.speaking() ? 'Speaking…' : 'Live' }}</span>@if (kai.voice.speaking()) { <button type="button" (click)="kai.voice.stop()">Interrupt</button> }<button type="button" (click)="kai.stopLive()">End</button></div> }
-        <div class="sugg">@if (!kai.live()) { <button type="button" class="golive" (click)="kai.startLive()"><i></i>Live talk</button> }<select aria-label="Answer language" (change)="kai.lang.set($any($event.target).value)">@for (l of langs; track l.id) { <option [value]="l.id" [selected]="kai.lang.lang() === l.id">{{ l.label }}</option> }</select>@for (s of suggest; track s) { <button type="button" (click)="kai.ask(s)">{{ s }}</button> }</div>
+        <div class="sugg">@if (!kai.live()) { <button type="button" class="golive" (click)="kai.startLive()"><i></i>Live talk</button> }<app-dropdown variant="pill" ariaLabel="Answer language" [options]="langOptions" [value]="kai.lang.lang()" (valueChange)="kai.lang.set($event)" />@for (s of suggest; track s) { <button type="button" (click)="kai.ask(s)">{{ s }}</button> }</div>
         <form (submit)="$event.preventDefault(); kai.ask(inp.value); inp.value = ''">
           <button type="button" class="mic" [class.on]="kai.voice.listening()" (click)="kai.listenAndAsk()" [attr.aria-label]="kai.voice.listening() ? 'Stop listening' : 'Ask with your voice'" [disabled]="!kai.voice.canListen" [title]="kai.voice.canListen ? 'Ask out loud' : 'Voice input needs Chrome, Edge or Safari'">
             <app-icon name="mic" [size]="17" />
@@ -201,7 +202,6 @@ const SUGGEST = ['Match a job description', 'Mock interview', 'Draft a message t
     .livebar { flex-shrink: 0; display: flex; align-items: center; gap: 10px; padding: 9px 14px; border-top: 1px solid var(--border); font-size: 0.8rem; color: var(--text); } .livebar span { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; } .livebar button { padding: 5px 11px; border-radius: 999px; border: 1px solid var(--border-strong); background: none; color: var(--text); font-size: 0.74rem; cursor: pointer; }
     .livebar i, .golive i { width: 9px; height: 9px; border-radius: 50%; background: #ef4444; flex-shrink: 0; } .livebar i.on { animation: pulse 1.1s infinite; } .sugg .golive { display: inline-flex; align-items: center; gap: 7px; color: var(--text); font-weight: 700; border-color: #ef4444; }
     .rate { display: flex; gap: 12px; font-size: 0.72rem; color: var(--text-2); margin-top: -3px; } .rate button { border: 0; background: none; padding: 0; font: inherit; color: var(--text-2); cursor: pointer; text-decoration: underline; } .rate button:hover { color: var(--accent); }
-    .sugg select { flex-shrink: 0; padding: 5px 8px; border-radius: 999px; border: 1px solid var(--border-strong); background: var(--surface-solid); color: var(--text-2); font-size: 0.74rem; }
     .fine button, .device button { border: 0; background: none; padding: 0; font: inherit; font-weight: 600; color: var(--accent); cursor: pointer; text-decoration: underline; }
     .device { flex-shrink: 0; padding: 8px 16px; font-size: 0.76rem; color: var(--text-2); border-bottom: 1px solid var(--border); }
     .nudge { position: fixed; right: 150px; bottom: 74px; width: min(270px, calc(100vw - 32px)); padding: 13px 15px; border-radius: 18px 18px 4px 18px; background: var(--surface-solid); border: 1px solid var(--border-strong); box-shadow: var(--shadow); animation: fade-nudge 0.3s; font-size: 0.86rem; display: grid; gap: 9px; }
@@ -243,6 +243,7 @@ export class Assistant {
   protected readonly kai = inject(KaiService);
   protected readonly suggest = SUGGEST;
   protected readonly langs = LANGS;
+  protected readonly langOptions = LANGS.map(l => ({ value: l.id, label: l.label }));
   /** each mouth bar reacts with a different strength so it looks like speech, not a meter */
   protected readonly bars = [1.6, 2.6, 3.2, 2.4, 1.4];
   private log = viewChild<ElementRef<HTMLElement>>('log');

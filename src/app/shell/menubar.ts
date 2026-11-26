@@ -9,12 +9,13 @@ import { NotificationService } from '../core/notification.service';
 import { PetService } from '../core/pet.service';
 import { WallpaperMood } from '../core/wallpaper-mood.service';
 import { LANGS } from '../core/language.service';
+import { Dropdown } from '../core/dropdown';
 import { PROFILE } from '../data/portfolio.data';
 
 @Component({
   selector: 'app-menubar',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [Icon, Logo],
+  imports: [Dropdown, Icon, Logo],
   template: `
     <header class="bar">
       <button type="button" class="logo" (click)="menu.set(!menu())" [attr.aria-expanded]="menu()" aria-label="Kishore.OS menu">
@@ -24,6 +25,7 @@ import { PROFILE } from '../data/portfolio.data';
       @if (menu()) {
         <div class="drop" role="menu" (click)="menu.set(false)">
           <button type="button" role="menuitem" (click)="os.open('about')"><app-icon name="user" [size]="14" /> About Kishore</button>
+          <button type="button" role="menuitem" (click)="os.open('card')"><app-icon name="id-card" [size]="14" /> Business card</button>
           <button type="button" role="menuitem" (click)="kai.tour()"><app-icon name="volume" [size]="14" /> Start voice tour</button>
           <button type="button" role="menuitem" (click)="os.spotlight.set(true)"><app-icon name="search" [size]="14" /> Spotlight search <kbd>Ctrl K</kbd></button>
           <button type="button" role="menuitem" (click)="os.open('guestbook')"><app-icon name="message" [size]="14" /> Guestbook</button>
@@ -44,7 +46,7 @@ import { PROFILE } from '../data/portfolio.data';
       }
       <div class="right">
         <button type="button" class="ai mono" [attr.data-s]="ai().key" (click)="os.open('monitor')" [title]="ai().title"><i></i>{{ ai().label }}</button>
-        <select class="lang" aria-label="ALPHA's answer language" (change)="kai.lang.set($any($event.target).value)">@for (l of langs; track l.id) { <option [value]="l.id" [selected]="kai.lang.lang() === l.id">{{ l.label }}</option> }</select>
+        <app-dropdown class="lang" variant="mini" ariaLabel="ALPHA's answer language" [options]="langOptions" [value]="kai.lang.lang()" (valueChange)="kai.lang.set($event)" />
         <span class="status mono"><i></i> Open to work</span>
         <button type="button" class="ic" (click)="os.spotlight.set(true)" aria-label="Search (Ctrl K)"><app-icon name="search" [size]="15" /></button>
         @if (kai.voice.canListen) {
@@ -81,10 +83,9 @@ import { PROFILE } from '../data/portfolio.data';
     .bell { position: relative; } .bell b { position: absolute; top: 1px; right: 0; min-width: 14px; height: 14px; padding: 0 3px; border-radius: 8px; background: #b91c1c; color: #fff; font: 700 0.6rem/14px var(--mono); text-align: center; }
     .ai { display: inline-flex; align-items: center; gap: 6px; padding: 3px 10px; border-radius: 999px; border: 1px solid var(--line-2); background: none; color: var(--ink-2); font-size: 0.7rem; cursor: pointer; } .ai:hover { color: var(--ink); border-color: var(--accent); }
     .ai i { width: 7px; height: 7px; border-radius: 50%; background: #94a3b8; } .ai[data-s='on'] i { background: #34d399; } .ai[data-s='device'] i { background: #60a5fa; }
-    .lang { height: 26px; padding: 0 6px; border-radius: 999px; border: 1px solid var(--line-2); background: var(--solid); color: var(--ink-2); font-size: 0.72rem; }
     .clock { padding: 0 8px; font-size: 0.78rem; white-space: nowrap; }
     @media (max-width: 1000px) { .status { display: none; } }
-    @media (max-width: 760px) { .app, .logo b, .lang { display: none; } .ai { font-size: 0; gap: 0; padding: 7px; border: 0; } }
+    @media (max-width: 760px) { .app, .logo b, app-dropdown.lang { display: none; } .ai { font-size: 0; gap: 0; padding: 7px; border: 0; } }
     @media (max-width: 420px) { .clock { padding: 0 2px; font-size: 0.68rem; } }
   `,
 })
@@ -98,6 +99,7 @@ export class Menubar implements OnInit, OnDestroy {
   protected readonly pet = inject(PetService);
   protected readonly mood = inject(WallpaperMood);
   protected readonly langs = LANGS;
+  protected readonly langOptions = LANGS.map(l => ({ value: l.id, label: l.label }));
   protected readonly ai = computed(() => this.kai.cloud.aiOnline() ? { key: 'on', label: 'Gemini', title: 'Gemini answers. Open the System Monitor for details.' }
     : this.kai.device.state() === 'ready' ? { key: 'device', label: 'On device', title: "Chrome's own AI answers." } : { key: 'off', label: 'Offline brain', title: 'Gemini is not available, so ALPHA uses its built-in answers.' });
   protected readonly menu = signal(false);

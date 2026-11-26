@@ -211,7 +211,7 @@ export class Terminal {
         const g = gameId(name);
         if (!g) return this.out('usage: game ' + [...GAMES.map(x => x.id), 'daily'].join(' | '), 'err');
         this.arcade.game.set(g);
-        this.os.open('games');
+        this.os.open('play');
         return this.out(`starting ${g}…`, 'ok');
       }
       case 'windows':

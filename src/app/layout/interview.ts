@@ -1,7 +1,8 @@
-import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, OnDestroy, computed, inject, output, signal, viewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, OnDestroy, computed, inject, linkedSignal, output, signal, viewChild } from '@angular/core';
 import { AssistantBus } from '../core/assistant.bus';
 import { CloudService } from '../core/cloud.service';
 import { Icon } from '../core/icon';
+import { Dropdown } from '../core/dropdown';
 import { InterviewService } from '../core/interview.service';
 import { chapter } from '../core/notes.service';
 import { VisitorMemory } from '../core/visitor-memory.service';
@@ -12,7 +13,7 @@ import { DIALOG_STYLES } from './dialog-styles';
 @Component({
   selector: 'app-interview',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [Icon],
+  imports: [Dropdown, Icon],
   template: `
     <dialog #dialog aria-labelledby="iv-title" (close)="close.emit()" (click)="$event.target === dialog && dialog.close()">
       <div class="box">
@@ -24,7 +25,7 @@ import { DIALOG_STYLES } from './dialog-styles';
           @switch (iv.phase()) {
             @case ('setup') {
               <label for="iv-topic">Five questions from the study notes, scored as you go. A chapter you find hard comes back sooner.</label>
-              <select id="iv-topic" #topic>@for (c of iv.choices(); track c.value) { <option [value]="c.value" [selected]="!!bus.interviewGroup() && c.value.endsWith(bus.interviewGroup())">{{ c.label }}</option> }</select>
+              <app-dropdown inputId="iv-topic" [options]="iv.choices()" [(value)]="topicValue" />
               @if (iv.error()) { <p class="err" role="alert">{{ iv.error() }}</p> }
               @if (cloud.enabled) { <p class="note">Answers are sent to Google Gemini for scoring. Without it, they get a rough keyword score.</p> }
               @if (memory.on()) { <p class="note">Your scores stay in this browser. "Forget me" in the chat deletes them.</p> }
@@ -104,7 +105,8 @@ export class Interview implements AfterViewInit, OnDestroy {
   protected readonly memory = inject(VisitorMemory);
   protected readonly voice = inject(VoiceService);
   private dialog = viewChild.required<ElementRef<HTMLDialogElement>>('dialog');
-  private topic = viewChild<ElementRef<HTMLSelectElement>>('topic');
+  private topic = viewChild(Dropdown);
+  protected readonly topicValue = linkedSignal(() => { const g = this.bus.interviewGroup(); return this.iv.choices().find(c => !!g && c.value.endsWith(g))?.value ?? 'mix'; });
   private answer = viewChild<ElementRef<HTMLTextAreaElement>>('answer');
   protected readonly scored = computed(() => this.iv.rounds().filter(r => r.grade).sort((a, b) => a.grade!.score - b.grade!.score));
   protected readonly title = (k: string) => chapter(k)?.title ?? '';
@@ -119,7 +121,7 @@ export class Interview implements AfterViewInit, OnDestroy {
   ngAfterViewInit() {
     document.documentElement.style.overflow = 'hidden';
     this.dialog().nativeElement.showModal();
-    this.topic()?.nativeElement.focus();
+    this.topic()?.focus();
   }
 
   ngOnDestroy() {
@@ -129,7 +131,7 @@ export class Interview implements AfterViewInit, OnDestroy {
   }
 
   protected async begin() {
-    await this.iv.start(this.topic()?.nativeElement.value ?? 'mix');
+    await this.iv.start(this.topicValue());
     this.focusAnswer();
   }
 

@@ -1,6 +1,6 @@
-import { ChangeDetectionStrategy, Component, OnDestroy, computed, effect, inject, signal, untracked } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy, effect, inject, signal, untracked } from '@angular/core';
 import { DetectiveView, RaceView, RpsView, StudioView } from '../lab/game-views';
-import { ArcadeState, GAMES, Game, best, save } from '../core/arcade';
+import { ArcadeState, best, save } from '../core/arcade';
 import { Icon } from '../core/icon';
 import { CoffeeCatch, Reaction, TicTacToe } from './arcade-games';
 import { SkillIcon } from '../core/skill-icon';
@@ -18,18 +18,7 @@ const TECH = [
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [Icon, SkillIcon, DetectiveView, RaceView, RpsView, StudioView, CoffeeCatch, Reaction, TicTacToe],
   template: `
-    <div class="inner">
-          @if (now(); as g) {
-            <div class="top"><button type="button" class="btn sm" (click)="state.game.set(null)"><app-icon name="grid" [size]="14" /> All games</button><h2>{{ g.title }}</h2></div>
-          } @else {
-            <p class="lead">Nine quick games. Best scores stay in this browser.</p>
-            <ul class="menu">
-              @for (g of games; track g.id) {
-                <li><button type="button" [style.--c]="g.color" (click)="state.game.set(g.id)"><span class="gi"><app-icon [name]="g.icon" [size]="24" /></span><b>{{ g.title }}</b><small>{{ g.text }}</small></button></li>
-              }
-            </ul>
-          }
-
+    <div>
           @if (game() === 'bugs') {
             <div class="hud mono">
               <span>score <b>{{ score() }}</b></span><span>time <b>{{ left() }}s</b></span><span><app-icon name="trophy" [size]="13" /> best <b>{{ bugBest() }}</b></span>
@@ -71,14 +60,7 @@ const TECH = [
         </div>
   `,
   styles: `
-    .inner { padding: 20px 24px 28px; }
     .new { display: grid; gap: 14px; }
-    .lead { color: var(--ink-2); margin-bottom: 14px; }
-    .top { display: flex; align-items: center; gap: 14px; margin-bottom: 14px; } .top h2 { font-size: 1.25rem; } .sm { padding: 7px 13px; font-size: 0.82rem; }
-    .menu { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; } .menu li { display: grid; }
-    .menu button { display: grid; justify-items: center; align-content: start; gap: 6px; padding: 16px 10px; border-radius: 18px; border: 1px solid var(--line-2); background: linear-gradient(160deg, color-mix(in srgb, var(--c) 22%, transparent), transparent 70%), var(--glass-2); color: var(--ink); cursor: pointer; text-align: center; transition: transform 0.2s, border-color 0.2s; } .menu button:hover { transform: translateY(-3px); border-color: var(--c); }
-    .gi { width: 50px; height: 50px; display: grid; place-items: center; border-radius: 15px; color: #fff; background: var(--c); } .menu b { font-size: 0.94rem; } .menu small { color: var(--ink-2); font-size: 0.78rem; line-height: 1.35; }
-    @media (max-width: 760px) { .inner { padding: 16px 14px 190px; } } @media (max-width: 430px) { .menu { gap: 8px; } .menu button { padding: 12px 6px; } .menu small { display: none; } }
     .hud { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; margin-bottom: 12px; font-size: 0.82rem; color: var(--ink-2); }
     .hud b { color: var(--ink); font-size: 1rem; }
     .hud span { display: inline-flex; align-items: center; gap: 6px; }
@@ -106,10 +88,8 @@ const TECH = [
   `,
 })
 export class Arcade implements OnDestroy {
-  protected readonly state = inject(ArcadeState);
-  protected readonly games = GAMES;
-  protected readonly game = this.state.game;
-  protected readonly now = computed(() => GAMES.find(g => g.id === this.game()) ?? null);
+  /** The quick game picked in the AI Playground. */
+  protected readonly game = inject(ArcadeState).game;
 
   constructor() {
     effect(() => { const g = this.game(); untracked(() => this.enter(g)); });
@@ -190,7 +170,7 @@ export class Arcade implements OnDestroy {
   }
 
   /** leaving a game stops it */
-  private enter(g: Game | null) {
+  private enter(g: string | null) {
     if (this.running()) this.endBugs();
     this.played.set(false);
     if (g === 'match' && !this.tiles().length) this.newMatch();

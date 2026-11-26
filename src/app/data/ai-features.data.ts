@@ -50,7 +50,7 @@ export const AI_FEATURES: AiFeature[] = [
   f('Developer AI Lab', 'wrench', 'Debugging assistant', 'ai', { lab: 'debug' }, 'Likely causes for an error.'),
   f('Developer AI Lab', 'calendar', 'Learning roadmap', 'ai', { lab: 'roadmap' }, 'A weekly plan through the notes.'),
   f('Developer AI Lab', 'book-open', 'Concept explainer', 'ai', { lab: 'explain' }, 'Any topic, at your level.'),
-  f('Developer AI Lab', 'search', 'Answers from notes', 'ai', { do: 'scroll-notes' }, 'ALPHA quotes 2,700+ notes and names the chapter.'),
+  f('Developer AI Lab', 'search', 'Answers from notes', 'ai', { do: 'scroll-notes' }, 'ALPHA quotes 3,200+ notes and names the chapter.'),
 
   f('Interactive', 'mic', 'Live talk', 'browser', { do: 'live' }, 'A hands-free conversation with ALPHA, turn by turn.'),
   f('Interactive', 'pin', 'Voice remote control', 'browser', { do: 'chat' }, 'Say “scroll down”, “next project” or “dark mode”.'),
@@ -83,7 +83,7 @@ export const AI_FEATURES: AiFeature[] = [
   f('Behind the scenes', 'pin', 'Proactive guide', 'none', null, 'Offers help when you stay in a window.'),
   f('Behind the scenes', 'cpu', 'On-device AI', 'browser', null, 'Chrome\'s own model when Gemini is resting.'),
   f('Behind the scenes', 'spark', 'Select and ask', 'ai', null, 'Select text in a window, then "Ask ALPHA".'),
-  f('Behind the scenes', 'globe', 'Tamil and Hindi', 'ai', null, 'Choose the answer language in the chat.'),
+  f('Behind the scenes', 'globe', 'Indian languages', 'ai', null, 'Choose the answer language in the chat.'),
   f('Behind the scenes', 'check', 'Feedback buttons', 'none', null, 'Rate any AI answer.'),
   f('Behind the scenes', 'code', 'AI-friendly site', 'none', null, 'llms.txt and structured data for AI and search.'),
   ...(FIRESTORE_EXTRAS ? [f('Behind the scenes', 'database', 'Shared answer cache', 'none', null, 'Approved answers cost no AI requests.')] : []),

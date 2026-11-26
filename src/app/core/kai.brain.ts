@@ -20,13 +20,14 @@ export const NARRATION: Record<AppId, string> = {
   notes: `These are the notes Kishore revises before interviews: ${TOPICS.length} chapters and over ${QUESTIONS.toLocaleString()} questions, split into a Java full stack guide and a DSA and coding guide. Search for any topic, like JWT or Kafka, and each chapter opens straight to its page.`,
   terminal: `This is a working terminal. Type help to see the commands. You can list projects, open any app, switch the theme, or even type say, followed by some text, and I will read it out loud.`,
   contact: `Want to work with Kishore? Email him at ${PROFILE.email.replace('@', ' at ')}, or use the form on the right and the message lands straight in his inbox. He is open to Java full stack roles and freelance projects.`,
-  games: `The arcade has nine quick games: Bug Squash, Stack Match, Coffee Catch, Three in a Row, Quick Tap, Rock Paper Scissors, Skill Detective, a code typing race, and a studio where you direct me.`,
   monitor: `The system monitor shows how this site itself is built, with live frame rate and load time, what my agent is doing, and a simplified map of the 75Health EHR architecture. Click any block to learn what it does.`,
   ailab: `This is the AI Lab. It holds every AI option on Kishore O S: the job matcher, coding and diagram tools, games, and more. Each tool opens in its own window.`,
   wallpaper: `Choose your own desktop background here. Upload a picture, or pick one of the ready made ones. Your picture stays in this browser and is never uploaded.`,
   files: `These are your files. Results you save from the AI Lab appear here, next to Kishore's resume and study guides. They stay in this browser.`,
   guestbook: `This is the guestbook. Leave a short note for Kishore, pick a sticky-note colour, and it appears on the wall for every visitor in real time.`,
   resume: `This is Kishore's resume as a PDF. You can read it here or download it with the button at the top.`,
+  card: `This is Kishore's digital business card. Flip it to see a QR code: scan it with your phone camera and his phone, email, LinkedIn and GitHub are saved to your contacts. You can also download the contact file or share the card.`,
+  play: `This is the AI Playground, home of every game. In the AI games I plan a mission on this desktop, narrate an on-call adventure, or read your mind. There are also nine quick games: Bug Squash, Stack Match, Coffee Catch, Three in a Row, Quick Tap, Rock Paper Scissors, Skill Detective, a code typing race, and a studio where you direct me.`,
 };
 
 export { answer, projectStory } from './assistant.brain';

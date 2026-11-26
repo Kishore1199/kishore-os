@@ -71,6 +71,7 @@
               "cytoscape-cose-bilkent",
               "cytoscape-fcose",
               "dayjs",
+              "qrcode-generator",
               "elkjs"
             ]
           },

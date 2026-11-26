@@ -19,7 +19,8 @@ import { Skills } from './apps/skills';
 import { Notes } from './apps/notes';
 import { Terminal } from './apps/terminal';
 import { Contact } from './apps/contact';
-import { Arcade } from './apps/arcade';
+import { Card } from './apps/card';
+import { Playground } from './apps/playground';
 import { Monitor } from './apps/monitor';
 import { Resume } from './apps/resume';
 import { Guestbook } from './apps/guestbook';
@@ -31,7 +32,7 @@ import { LabDialog } from './lab/lab-dialog';
 @Component({
   selector: 'app-root',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [Icon, Wallpaper, Boot, Menubar, Desktop, Dock, WindowFrame, Assistant, Notifications, AiCatalog, Files, WallpaperApp, LabDialog, Spotlight, About, Projects, Experience, Skills, Notes, Terminal, Contact, Arcade, Monitor, Resume, Guestbook],
+  imports: [Icon, Wallpaper, Boot, Menubar, Desktop, Dock, WindowFrame, Assistant, Notifications, AiCatalog, Files, WallpaperApp, LabDialog, Spotlight, About, Projects, Experience, Skills, Notes, Terminal, Contact, Playground, Card, Monitor, Resume, Guestbook],
   host: { '(document:keydown)': 'key($event)', '(window:hashchange)': 'hash()' },
   template: `
     <app-wallpaper />
@@ -49,7 +50,8 @@ import { LabDialog } from './lab/lab-dialog';
             @case ('notes') { <app-notes /> }
             @case ('terminal') { <app-terminal /> }
             @case ('contact') { <app-contact /> }
-            @case ('games') { <app-arcade /> }
+            @case ('play') { @defer (on immediate) { <app-playground /> } }
+            @case ('card') { @defer (on immediate) { <app-card /> } }
             @case ('monitor') { <app-monitor /> }
             @case ('resume') { <app-resume /> }
             @case ('guestbook') { <app-guestbook /> }

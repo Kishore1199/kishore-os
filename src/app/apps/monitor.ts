@@ -18,7 +18,7 @@ const MAPS: Map[] = [
       [
         { id: 'wm', name: 'Window manager', sub: 'View Transitions API', icon: 'layers', info: 'Opening, closing and maximising use document.startViewTransition, so windows morph smoothly in supporting browsers and fall back gracefully elsewhere.' },
         { id: 'kai', name: 'ALPHA voice guide', sub: 'Web Speech API', icon: 'mic', info: 'speechSynthesis speaks with word-boundary events driving live captions and the orb’s mouth; SpeechRecognition turns your voice into questions. The agent behind it uses Google Gemini through Firebase, with built-in answers when that is not available. No API keys — answers come from the portfolio data.' },
-        { id: 'spot', name: 'Spotlight', sub: 'Ctrl / ⌘ + K', icon: 'search', info: 'One index over apps, actions, projects, 58 skills and all 84 study chapters, with keyboard navigation.' },
+        { id: 'spot', name: 'Spotlight', sub: 'Ctrl / ⌘ + K', icon: 'search', info: 'One index over apps, actions, projects, 58 skills and all 87 study chapters, with keyboard navigation.' },
       ],
       [
         { id: 'gl', name: 'Aurora wallpaper', sub: 'three.js GLSL shader', icon: 'cpu', info: 'A domain-warped noise shader rendered at reduced resolution and ~40 fps, paused when the tab is hidden. It brightens and ripples while ALPHA speaks.' },
